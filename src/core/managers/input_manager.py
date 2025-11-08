@@ -26,10 +26,12 @@ class InputManager:
     def handle_events(self, e: pg.event.Event) -> None:
         if e.type == pg.MOUSEMOTION:
             self.mouse_pos = e.pos
+
         elif e.type == pg.MOUSEBUTTONDOWN:
             if e.button in (1, 2, 3):
                 self._down_mouse.add(e.button)
                 self._pressed_mouse.add(e.button)
+                Logger.debug(f"MOUSEMOTION event: {e}")
             elif e.button in (4, 5):
                 self.mouse_wheel += 1 if e.button == 4 else -1
         elif e.type == pg.MOUSEBUTTONUP:

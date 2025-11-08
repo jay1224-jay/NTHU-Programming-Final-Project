@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 import pygame as pg
+
 
 from src.sprites import Sprite
 from src.core.services import input_manager
@@ -25,11 +27,11 @@ class Button(UIComponent):
         '''
         [TODO HACKATHON 1]
         Initialize the properties
-        
-        self.img_button_hover = ...
-        self.img_button = ...       --> This is a reference for which image to render
-        self.on_click = ...
         '''
+        self.img_button_hover = Sprite(img_hovered_path, (width, height))
+        self.img_button = Sprite(img_path, (width, height))      # --> This is a reference for which image to render
+        self.on_click = on_click
+
 
     @override
     def update(self, dt: float) -> None:
@@ -46,7 +48,14 @@ class Button(UIComponent):
         else:
             ...
         '''
-        pass
+        if self.hitbox.collidepoint(input_manager.mouse_pos):
+            # Logger.debug("Hover")
+            self.img_button_default.image = self.img_button_hover.image
+            if input_manager.mouse_pressed(1) and self.on_click is not None:
+                self.on_click()
+                Logger.debug("Click")
+        else:
+            self.img_button_default.image = self.img_button.image
     
     @override
     def draw(self, screen: pg.Surface) -> None:
@@ -60,6 +69,7 @@ class Button(UIComponent):
 def main():
     import sys
     import os
+
     
     pg.init()
 

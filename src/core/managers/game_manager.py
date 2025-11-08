@@ -75,7 +75,6 @@ class GameManager:
         for entity in self.enemy_trainers[self.current_map_key]:
             if rect.colliderect(entity.animation.rect):
                 return True
-        
         return False
         
     def save(self, path: str) -> None:

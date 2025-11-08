@@ -29,4 +29,5 @@ class Sprite:
             pg.draw.rect(screen, (255, 0, 0), self.rect, 1)
         
     def update_pos(self, pos: Position):
+        # print(type(self.rect.topleft))
         self.rect.topleft = (round(pos.x), round(pos.y))

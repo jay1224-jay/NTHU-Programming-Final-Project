@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import dis
+
 import pygame as pg
 from .entity import Entity
 from src.core.services import input_manager
@@ -31,21 +34,40 @@ class Player(Entity):
                     4. If collide, snap to grid
                   instead of update both x, y, then snap to grid
         '''
-        d = self.speed / GameSettings.TILE_SIZE
+        d = self.speed * dt
         if input_manager.key_down(pg.K_LEFT) or input_manager.key_down(pg.K_a):
             dis.x -= d
         if input_manager.key_down(pg.K_RIGHT) or input_manager.key_down(pg.K_d):
             dis.x += d
+
+
         if input_manager.key_down(pg.K_UP) or input_manager.key_down(pg.K_w):
             dis.y -= d
         if input_manager.key_down(pg.K_DOWN) or input_manager.key_down(pg.K_s):
             dis.y += d
+
         if dis.x and dis.y:
-            # Normalize distnce
+            # Normalize distance
             # Use 1+1=sqrt(2)^2 (in triangle)
             dis.x /= math.sqrt(2)
             dis.y /= math.sqrt(2)
-        self.position = Position(self.position.x + dis.x, self.position.y + dis.y)
+
+        x, y, width, height = self.game_manager.player.animation.rect
+        # print(x, y, width, height)
+        x = self.position.x + dis.x
+
+        if self.game_manager.check_collision(pg.Rect(x, y, width, height)):
+            x = self._snap_to_grid(x)
+
+
+        y = self.position.y + dis.y
+        if self.game_manager.check_collision(pg.Rect(x, y, width, height)):
+            y = self._snap_to_grid(y)
+
+        self.position = Position(x, y)
+        # self.position = Position(self.position
+
+
 
         
         # Check teleportation

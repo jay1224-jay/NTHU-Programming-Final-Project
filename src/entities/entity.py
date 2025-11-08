@@ -44,7 +44,6 @@ class Entity:
         Implement the correct algorithm of player camera
         '''
         # Also consider Player's width and height
-        Logger.debug("Camera position")
         # print(self.game_manager.__dict__)
         return PositionCamera(int(self.position.x), int(self.position.y))
         

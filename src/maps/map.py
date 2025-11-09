@@ -2,6 +2,7 @@ import pygame as pg
 import pytmx
 
 from src.utils import load_tmx, Position, GameSettings, PositionCamera, Teleport
+from src.utils import Logger
 
 class Map:
     # Map Properties
@@ -52,6 +53,13 @@ class Map:
         
     def check_teleport(self, pos: Position) -> Teleport | None:
         '''TODO: Teleportation'''
+        error_range = GameSettings.TILE_SIZE
+        error_range = GameSettings.TILE_SIZE
+        # print(self.teleporters)
+        for i in self.teleporters:
+            if (i.pos.x - error_range <= pos.x <= i.pos.x + error_range  and \
+                i.pos.y - error_range <= pos.y <= i.pos.y + error_range):
+                return i
         return None
 
     def _render_all_layers(self, target: pg.Surface) -> None:

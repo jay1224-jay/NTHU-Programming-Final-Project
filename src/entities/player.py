@@ -67,9 +67,6 @@ class Player(Entity):
         self.position = Position(x, y)
         # self.position = Position(self.position
 
-
-
-        
         # Check teleportation
         tp = self.game_manager.current_map.check_teleport(self.position)
         if tp:

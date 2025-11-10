@@ -5,9 +5,12 @@ import time
 from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
 from src.utils import Logger, PositionCamera, GameSettings, Position
-from src.core.services import sound_manager
+from src.core.services import scene_manager, sound_manager
 from src.sprites import Sprite
 from typing import override
+from src.data import bag
+
+from src.interface.components import Button
 
 class GameScene(Scene):
     game_manager: GameManager
@@ -29,8 +32,21 @@ class GameScene(Scene):
         else:
             self.online_manager = None
         self.sprite_online = Sprite("ingame_ui/options1.png", (GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
-        
-        
+
+        self.bag_opened = False
+        self.setting_button = Button(
+            "UI/button_setting.png", "UI/button_setting_hover.png",
+            GameSettings.SCREEN_WIDTH - 75, 50, 50, 50,
+            lambda: scene_manager.change_scene("setting")
+        )
+
+        self.backpack_button = Button(
+            "UI/button_backpack.png", "UI/button_backpack_hover.png",
+            GameSettings.SCREEN_WIDTH - 75 - 50 - 10, 50, 50, 50,
+            lambda: scene_manager.open_bag()
+        )
+
+
     @override
     def enter(self) -> None:
         sound_manager.play_bgm("RBY 103 Pallet Town.ogg")
@@ -55,6 +71,8 @@ class GameScene(Scene):
             
         # Update others
         self.game_manager.bag.update(dt)
+        self.setting_button.update(dt)
+        self.backpack_button.update(dt)
         
         if self.game_manager.player is not None and self.online_manager is not None:
             _ = self.online_manager.update(
@@ -64,11 +82,12 @@ class GameScene(Scene):
             )
         
     @override
-    def draw(self, screen: pg.Surface):        
+    def draw(self, screen: pg.Surface):
+
         if self.game_manager.player:
             '''
             [TODO HACKATHON 3]
-            Implement the camera algorithm logic here
+            Implement the camera    algorithm logic here
             Right now it's hard coded, you need to follow the player's positions
             you may use the below example, but the function still incorrect, you may trace the entity.py
             
@@ -76,7 +95,7 @@ class GameScene(Scene):
             '''
             camera = self.game_manager.player.camera
             # camera = PositionCamera(16 * GameSettings.TILE_SIZE, 30 * GameSettings.TILE_SIZE)
-            self.game_manager.current_map.draw(screen, camera)
+            self.game_manager.current_map.draw(screen, camera, scene_manager.bag_opened)
             self.game_manager.player.draw(screen, camera)
         else:
             camera = PositionCamera(0, 0)
@@ -84,7 +103,8 @@ class GameScene(Scene):
         for enemy in self.game_manager.current_enemy_trainers:
             enemy.draw(screen, camera)
 
-        self.game_manager.bag.draw(screen)
+
+
         
         if self.online_manager and self.game_manager.player:
             list_online = self.online_manager.get_list_players()
@@ -94,3 +114,13 @@ class GameScene(Scene):
                     pos = cam.transform_position_as_position(Position(player["x"], player["y"]))
                     self.sprite_online.update_pos(pos)
                     self.sprite_online.draw(screen)
+
+        self.setting_button.draw(screen)
+        if scene_manager.bag_opened:
+            dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
+            dark_overlay.fill((0, 0, 0, 128))
+            screen.blit(dark_overlay, (0, 0))
+
+        self.game_manager.bag.draw(screen)
+
+        self.backpack_button.draw(screen)

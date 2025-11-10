@@ -33,14 +33,24 @@ class Map:
     def update(self, dt: float):
         return
 
-    def draw(self, screen: pg.Surface, camera: PositionCamera):
+    def draw(self, screen: pg.Surface, camera: PositionCamera, darken=False):
+
+        if darken:
+            dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
+            dark_overlay.fill((0, 0, 0, 128))
+            screen.blit(dark_overlay, (0, 0))
+
         screen.blit(self._surface, camera.transform_position(Position(0, 0)))
-        
         # Draw the hitboxes collision map
         if GameSettings.DRAW_HITBOXES:
             for rect in self._collision_map:
                 pg.draw.rect(screen, (255, 0, 0), camera.transform_rect(rect), 1)
-        
+        '''
+        if darken:
+            self._surface.set_alpha(128)
+        else:
+            self._surface.set_alpha(255)
+        '''
     def check_collision(self, rect: pg.Rect) -> bool:
         '''
         [TODO HACKATHON 4]
@@ -53,7 +63,7 @@ class Map:
         
     def check_teleport(self, pos: Position) -> Teleport | None:
         '''TODO: Teleportation'''
-        error_range = GameSettings.TILE_SIZE
+        # error_range = GameSettings.TILE_SIZE
         error_range = GameSettings.TILE_SIZE
         # print(self.teleporters)
         for i in self.teleporters:

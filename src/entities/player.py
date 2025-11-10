@@ -4,7 +4,7 @@ import dis
 
 import pygame as pg
 from .entity import Entity
-from src.core.services import input_manager
+from src.core.services import input_manager, scene_manager
 from src.utils import Position, PositionCamera, GameSettings, Logger
 from src.core import GameManager
 import math
@@ -34,7 +34,13 @@ class Player(Entity):
                     4. If collide, snap to grid
                   instead of update both x, y, then snap to grid
         '''
+
+
         d = self.speed * dt
+        if input_manager.key_down(pg.K_LSHIFT):
+            d *= 1.5
+            # print("Accelarate")
+
         if input_manager.key_down(pg.K_LEFT) or input_manager.key_down(pg.K_a):
             dis.x -= d
             self.animation.switch("left")
@@ -67,7 +73,8 @@ class Player(Entity):
         if self.game_manager.check_collision(pg.Rect(x, y, width, height)):
             y = self._snap_to_grid(y)
 
-        self.position = Position(x, y)
+        if not scene_manager.bag_opened:
+            self.position = Position(x, y)
         # self.position = Position(self.position
 
         # Check teleportation

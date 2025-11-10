@@ -14,7 +14,7 @@ class GameManager:
     # Entities
     player: Player | None
     enemy_trainers: dict[str, list[EnemyTrainer]]
-    bag: "Bag"
+    bag: Bag
     
     # Map properties
     current_map_key: str
@@ -28,13 +28,13 @@ class GameManager:
                  player: Player | None,
                  enemy_trainers: dict[str, list[EnemyTrainer]], 
                  bag: Bag | None = None):
-                     
         from src.data.bag import Bag
         # Game Properties
         self.maps = maps
         self.current_map_key = start_map
         self.player = player
         self.enemy_trainers = enemy_trainers
+
         self.bag = bag if bag is not None else Bag([], [])
         
         # Check If you should change scene

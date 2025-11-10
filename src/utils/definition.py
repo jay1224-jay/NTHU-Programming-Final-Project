@@ -19,6 +19,9 @@ class Position:
         
     def distance_to(self, other: "Position") -> float:
         return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
+    def __add__(self, other: "Position") -> "Position":
+        return Position(self.x + other.x, self.y + other.y)
         
 @dataclass
 class PositionCamera:

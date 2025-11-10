@@ -20,7 +20,7 @@ class Button(UIComponent):
         self,
         img_path: str, img_hovered_path:str,
         x: int, y: int, width: int, height: int,
-        on_click: Callable[[], None] | None = None
+        on_click: Callable[[], None] | None = None, surface_x=0, surface_y=0,
     ):
         self.img_button_default = Sprite(img_path, (width, height))
         self.hitbox = pg.Rect(x, y, width, height)
@@ -31,7 +31,8 @@ class Button(UIComponent):
         self.img_button_hover = Sprite(img_hovered_path, (width, height))
         self.img_button = Sprite(img_path, (width, height))      # --> This is a reference for which image to render
         self.on_click = on_click
-
+        self.surface_x = surface_x
+        self.surface_y = surface_y
 
     @override
     def update(self, dt: float) -> None:
@@ -48,11 +49,10 @@ class Button(UIComponent):
         else:
             ...
         '''
-        if self.hitbox.collidepoint(input_manager.mouse_pos):
+        if self.hitbox.collidepoint((input_manager.mouse_pos[0]-self.surface_x, input_manager.mouse_pos[1]-self.surface_y)):
             self.img_button_default.image = self.img_button_hover.image
             if input_manager.mouse_pressed(1) and self.on_click is not None:
                 self.on_click()
-                Logger.debug("Click")
         else:
             self.img_button_default.image = self.img_button.image
     
@@ -63,7 +63,6 @@ class Button(UIComponent):
         You might want to change this too
         '''
         _ = screen.blit(self.img_button_default.image, self.hitbox)
-
 
 def main():
     import sys

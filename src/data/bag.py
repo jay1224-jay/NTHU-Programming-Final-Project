@@ -25,7 +25,7 @@ class Bag:
         self.bag_surface = pg.Surface((self.surface_width, self.surface_height))
         self.back_button = Button(
             "UI/button_back.png", "UI/button_back_hover.png",
-            20, self.surface_height-50-50, 50, 50,
+            20, self.surface_height-50-20, 50, 50,
             lambda: scene_manager.close_bag(), self.surface_x, self.surface_y
         )
         # self.back_button.screen_pos = Position(self.surface_x, self.surface_y)

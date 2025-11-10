@@ -33,8 +33,8 @@ class Engine:
         [TODO HACKATHON 5]
         Register the setting scene here
         '''
-        # scene_manager.register_scene("setting")
-        scene_manager.change_scene("game")
+        scene_manager.change_scene("menu")
+        # scene_manager.change_scene("game")
 
     def run(self):
         Logger.info("Running the Game Loop ...")

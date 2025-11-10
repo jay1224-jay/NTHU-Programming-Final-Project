@@ -54,6 +54,7 @@ class GameManager:
         return self.maps[self.current_map_key].teleporters
     
     def switch_map(self, target: str) -> None:
+        print(target)
         if target not in self.maps:
             Logger.warning(f"Map '{target}' not loaded; cannot switch.")
             return

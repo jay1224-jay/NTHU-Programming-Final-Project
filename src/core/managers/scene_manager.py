@@ -13,11 +13,18 @@ class SceneManager:
         Logger.info("Initializing SceneManager")
         self._scenes = {}
         self.bag_opened = False
+        self.setting_opened = False
 
     def close_bag(self):
         self.bag_opened = False
     def open_bag(self):
         self.bag_opened = True
+
+    def open_setting(self):
+        self.setting_opened = True
+
+    def close_setting(self):
+        self.setting_opened = False
         
     def register_scene(self, name: str, scene: Scene) -> None:
         self._scenes[name] = scene

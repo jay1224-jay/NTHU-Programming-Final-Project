@@ -23,21 +23,21 @@ class Bag:
         self.surface_x = GameSettings.SCREEN_WIDTH//2 - self.surface_width//2
         self.surface_y = GameSettings.SCREEN_HEIGHT//2 - self.surface_height//2
         self.bag_surface = pg.Surface((self.surface_width, self.surface_height))
-        self.back_button = Button(
-            "UI/button_back.png", "UI/button_back_hover.png",
-            20, self.surface_height-50-20, 50, 50,
+        self.close_button = Button(
+            "UI/button_x.png", "UI/button_x_hover.png",
+            self.surface_width - 20 - 30, 20, 40, 40,
             lambda: scene_manager.close_bag(), self.surface_x, self.surface_y
         )
         # self.back_button.screen_pos = Position(self.surface_x, self.surface_y)
 
     def update(self, dt: float):
-        self.back_button.update(dt)
+        self.close_button.update(dt)
 
     def draw(self, screen: pg.Surface):
         if scene_manager.bag_opened:
 
             self.bag_surface.fill("ORANGE")
-            self.back_button.draw(self.bag_surface)
+            self.close_button.draw(self.bag_surface)
             screen.blit(self.bag_surface, (self.surface_x, self.surface_y))
 
     def to_dict(self) -> dict[str, object]:

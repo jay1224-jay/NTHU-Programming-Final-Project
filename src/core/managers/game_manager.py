@@ -1,14 +1,19 @@
 from __future__ import annotations
-from src.utils import Logger, GameSettings, Position, Teleport
-import json, os
-import pygame as pg
+
+import json
+import os
 from typing import TYPE_CHECKING
+
+import pygame as pg
+
+from src.utils import Logger, GameSettings, Position, Teleport
 
 if TYPE_CHECKING:
     from src.maps.map import Map
     from src.entities.player import Player
     from src.entities.enemy_trainer import EnemyTrainer
     from src.data.bag import Bag
+
 
 class GameManager:
     # Entities
@@ -36,7 +41,6 @@ class GameManager:
         self.enemy_trainers = enemy_trainers
 
         self.bag = bag if bag is not None else Bag([], [])
-        
         # Check If you should change scene
         self.should_change_scene = False
         self.next_map = ""
@@ -54,7 +58,6 @@ class GameManager:
         return self.maps[self.current_map_key].teleporters
     
     def switch_map(self, target: str) -> None:
-        print(target)
         if target not in self.maps:
             Logger.warning(f"Map '{target}' not loaded; cannot switch.")
             return

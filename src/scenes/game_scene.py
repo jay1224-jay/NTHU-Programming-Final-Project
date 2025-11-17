@@ -9,6 +9,7 @@ from src.core.services import scene_manager, sound_manager
 from src.sprites import Sprite
 from typing import override
 from src.data import bag
+from .setting_surface import GameSettingSurface
 
 from src.interface.components import Button
 
@@ -37,7 +38,7 @@ class GameScene(Scene):
         self.setting_button = Button(
             "UI/button_setting.png", "UI/button_setting_hover.png",
             GameSettings.SCREEN_WIDTH - 75, 50, 50, 50,
-            lambda: scene_manager.change_scene("setting")
+            lambda: scene_manager.open_setting()
         )
 
         self.backpack_button = Button(
@@ -45,6 +46,8 @@ class GameScene(Scene):
             GameSettings.SCREEN_WIDTH - 75 - 50 - 10, 50, 50, 50,
             lambda: scene_manager.open_bag()
         )
+
+        self.setting_surface = GameSettingSurface()
 
 
     @override
@@ -71,6 +74,7 @@ class GameScene(Scene):
             
         # Update others
         self.game_manager.bag.update(dt)
+        self.setting_surface.update(dt)
         self.setting_button.update(dt)
         self.backpack_button.update(dt)
         
@@ -116,11 +120,13 @@ class GameScene(Scene):
                     self.sprite_online.draw(screen)
 
         self.setting_button.draw(screen)
-        if scene_manager.bag_opened:
+        if scene_manager.bag_opened or scene_manager.setting_opened:
             dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
             dark_overlay.fill((0, 0, 0, 128))
             screen.blit(dark_overlay, (0, 0))
 
+
         self.game_manager.bag.draw(screen)
+        self.setting_surface.draw(screen)
 
         self.backpack_button.draw(screen)

@@ -41,7 +41,7 @@ class Slider(UIComponent):
     def update(self, dt: float) -> None:
         if self.hitbox.collidepoint(
                 (input_manager.mouse_pos[0] - self.surface_x, input_manager.mouse_pos[1] - self.surface_y)):
-            if input_manager.mouse_down(1):
+            if input_manager.mouse_down(1)  :
                 # print(self.hitbox.x, input_manager.mouse_pos[0])
                 self.hitbox.x = max(self.slider_background.x, input_manager.mouse_pos[0] - self.surface_x - self.hitbox.width//2) # centered to the mouse
                 self.hitbox.x = min(self.slider_background.x + self.slider_background.width - self.hitbox.width, self.hitbox.x)

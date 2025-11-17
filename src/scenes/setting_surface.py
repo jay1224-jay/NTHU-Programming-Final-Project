@@ -84,12 +84,12 @@ class GameSettingSurface:
             self.volume_slider.draw(self.setting_surface)
             self.mute_checkbox.draw(self.setting_surface)
 
-            self.volume_text_surface = self.game_font.render(f"VOLUME: {self.volume_slider.get_value()}%", True, (255, 255, 255))
-            self.setting_surface.blit(self.volume_text_surface, (20, self.surface_height//2 - 50))
+            volume_text_surface = self.game_font.render(f"VOLUME: {self.volume_slider.get_value()}%", True, (255, 255, 255))
+            self.setting_surface.blit(volume_text_surface, (20, self.surface_height//2 - 50))
 
-            self.mute_text_surface = self.game_font.render("MUTE: " + ("ON" if self.mute_checkbox.get_value() else "OFF"), True,
+            mute_text_surface = self.game_font.render("MUTE: " + ("ON" if self.mute_checkbox.get_value() else "OFF"), True,
                                                              (255, 255, 255))
-            self.setting_surface.blit(self.mute_text_surface, (20, self.surface_height//2 + 20 + 30))
+            self.setting_surface.blit(mute_text_surface, (20, self.surface_height//2 + 20 + 30))
 
             screen.blit(self.setting_surface, (self.surface_x, self.surface_y))
 

@@ -23,6 +23,8 @@ class Engine:
         self.running = True
 
         pg.display.set_caption(GameSettings.TITLE)
+        pg.font.init()
+        my_font = pg.font.SysFont('aComic Sans MS', 30)
 
         scene_manager.register_scene("menu", MenuScene())
         scene_manager.register_scene("game", GameScene())

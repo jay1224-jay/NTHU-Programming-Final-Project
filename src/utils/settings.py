@@ -16,5 +16,6 @@ class Settings:
     # Online
     IS_ONLINE: bool = False
     ONLINE_SERVER_URL: str = "http://localhost:8989"
+    GAME_FONT = "assets/fonts/Minecraft.ttf"
     
 GameSettings = Settings()

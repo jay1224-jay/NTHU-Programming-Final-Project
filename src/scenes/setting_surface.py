@@ -1,5 +1,6 @@
 from src.utils.definition import Monster, Item
 from src.interface.components import Button
+from src.interface.components import Slider
 import pygame as pg
 import threading
 import time
@@ -25,7 +26,7 @@ class GameSettingSurface:
         self.save_button = Button(
             "UI/button_save.png", "UI/button_save_hover.png",
             20, self.surface_height - 50 - 20, 50, 50,
-            lambda: scene_manager.close_setting(), self.surface_x, self.surface_y
+            lambda: self.save(), self.surface_x, self.surface_y
         )
         self.load_button = Button(
             "UI/button_load.png", "UI/button_load_hover.png",
@@ -43,11 +44,27 @@ class GameSettingSurface:
             lambda: scene_manager.close_setting(), self.surface_x, self.surface_y
         )
 
+        self.volume_slider = Slider(
+            35, self.surface_height//2, self.surface_width - 70, 20, 50,
+            lambda : print("Hello"), self.surface_x, self.surface_y
+        )
+
+        self.game_font = pg.font.Font(GameSettings.GAME_FONT, 20)
+
+
+
+    def save(self):
+        Logger.debug(f"Set volume to {int(self.volume_slider.get_value())}%")
+        sound_manager.set_bgm_volume(self.volume_slider.get_value()/100)
+        scene_manager.close_setting()
+
     def update(self, dt: float):
         self.close_button.update(dt)
         self.save_button.update(dt)
         self.load_button.update(dt)
         self.back_button.update(dt)
+        self.volume_slider.update(dt)
+
 
     def draw(self, screen: pg.Surface):
         if scene_manager.setting_opened:
@@ -56,5 +73,10 @@ class GameSettingSurface:
             self.load_button.draw(self.setting_surface)
             self.save_button.draw(self.setting_surface)
             self.close_button.draw(self.setting_surface)
+            self.volume_slider.draw(self.setting_surface)
+
+            self.volume_text_surface = self.game_font.render(f"VOLUME: {self.volume_slider.get_value()}%", True, (255, 255, 255))
+            self.setting_surface.blit(self.volume_text_surface, (20, self.surface_height//2 - 30,))
+
             screen.blit(self.setting_surface, (self.surface_x, self.surface_y))
 

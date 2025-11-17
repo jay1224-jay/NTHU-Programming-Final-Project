@@ -18,8 +18,7 @@ class Slider(UIComponent):
 
     def __init__(
             self,
-            x: int, y: int, width: int, height: int, initial_value = 0,
-            on_click: Callable[[], None] | None = None, surface_x=0, surface_y=0,
+            x: int, y: int, width: int, height: int, initial_value = 0, surface_x=0, surface_y=0,
     ):
         img_path = "UI/raw/UI_Flat_Button02a_4.png"
 
@@ -32,7 +31,6 @@ class Slider(UIComponent):
         self.hitbox = pg.Rect(x + (width * self.initial_value / 100), y, height, height)
 
         self.img_button = Sprite(img_path, (height, height))  # --> This is a reference for which image to render
-        self.on_click = on_click
         self.surface_x = surface_x
         self.surface_y = surface_y
 
@@ -43,7 +41,7 @@ class Slider(UIComponent):
     def update(self, dt: float) -> None:
         if self.hitbox.collidepoint(
                 (input_manager.mouse_pos[0] - self.surface_x, input_manager.mouse_pos[1] - self.surface_y)):
-            if input_manager.mouse_down(1) and self.on_click is not None:
+            if input_manager.mouse_down(1):
                 # print(self.hitbox.x, input_manager.mouse_pos[0])
                 self.hitbox.x = max(self.slider_background.x, input_manager.mouse_pos[0] - self.surface_x - self.hitbox.width//2) # centered to the mouse
                 self.hitbox.x = min(self.slider_background.x + self.slider_background.width - self.hitbox.width, self.hitbox.x)

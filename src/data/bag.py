@@ -18,7 +18,7 @@ class Bag:
     def __init__(self, monsters_data: list[Monster] | None = None, items_data: list[Item] | None = None):
         self._monsters_data = monsters_data if monsters_data else []
         self._items_data = items_data if items_data else []
-        print(self._monsters_data)
+        # print(self._monsters_data)
 
         self.surface_width, self.surface_height = GameSettings.SCREEN_WIDTH//2, GameSettings.SCREEN_HEIGHT//2
         self.surface_x = GameSettings.SCREEN_WIDTH//2 - self.surface_width//2
@@ -30,8 +30,8 @@ class Bag:
             lambda: scene_manager.close_bag(), self.surface_x, self.surface_y
         )
 
-        self.game_fonts = {} # 18, 22, 26
-        for _size in range(18, 27, 4):
+        self.game_fonts = {}
+        for _size in range(10, 27, 2):
             self.game_fonts[_size] = pg.font.Font(GameSettings.GAME_FONT, _size)
 
         # self.back_button.screen_pos = Position(self.surface_x, self.surface_y)
@@ -55,28 +55,44 @@ class Bag:
             self.bag_surface.fill("ORANGE")
             self.close_button.draw(self.bag_surface)
             self.draw_text(self.bag_surface, "BAG", "black", 10, 10, 26)
+
             # Draw items
             i = 0
             for item in self._items_data:
                 item_sprite = Sprite(item["sprite_path"], (30, 30))
                 self.bag_surface.blit(item_sprite.image, (400, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40))
-                self.draw_text(self.bag_surface, item["name"], "black", 400 + 30 + 30, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7, 18)
+                self.draw_text(self.bag_surface, item["name"], "black", 400 + 30 + 30, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7, 16)
                 self.draw_text(self.bag_surface, f"x{item["count"]}", "black", 400 + 30 + 150,
-                               self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7, 18, "right")
+                               self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7, 16, "right")
                 i += 1
 
             # Draw monster, name, hp, max_hp, level
             i = 0
-            start_x = 100
-            start_y = self.close_button.hitbox.y
+            start_x = 90
+            start_y = self.close_button.hitbox.y - 30
             sprite_size = 50
+            background_rect_width = 70
+            background_rect_height = 10
+            monster_surface_width = 170
+            monster_surface_height = 50
             for monster in self._monsters_data:
+
+                monster_surface = pg.Surface((monster_surface_width, monster_surface_height))
+                monster_surface.fill("WHITE")
+
                 monster_sprite = Sprite(monster["sprite_path"], (sprite_size, sprite_size))
-                self.bag_surface.blit(monster_sprite.image,
-                                      (start_x, start_y + i * (sprite_size+5)))
-                self.draw_text(self.bag_surface, monster["name"], "black", start_x + 30 + 30,
-                               start_y + i * (sprite_size+5) + 7 , 18)
-                # self.draw_text(self.bag_surface, monster["level"], "black", start_x + 30 + 150, )
+                monster_surface.blit(monster_sprite.image,(0,  -5))
+                self.draw_text(monster_surface, monster["name"], "black", 30 + 25,10 , 14)
+                self.draw_text(monster_surface, "Lv" + str(monster["level"]), "black", 15 + 115, 25, 12)
+
+                # hp
+                background_rect = pg.Rect(30 + 25,  25, background_rect_width, background_rect_height)
+                pg.draw.rect(monster_surface, (50, 50, 50), background_rect)
+                hp_rect = pg.Rect(30 + 25, 25,
+                                          int(background_rect_width * monster["hp"] / monster["max_hp"]), background_rect_height)
+                pg.draw.rect(monster_surface, (50, 200, 50), hp_rect)
+                self.draw_text(monster_surface, f"{monster["hp"]}/{monster["max_hp"]}", "black",  30 + 25,40, 10)
+                self.bag_surface.blit(monster_surface, (start_x + 15, start_y + i * (monster_surface_height + 5) + 40))
                 i += 1
 
             screen.blit(self.bag_surface, (self.surface_x, self.surface_y))

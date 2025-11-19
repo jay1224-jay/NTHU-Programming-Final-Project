@@ -20,17 +20,17 @@ class Checkbox(UIComponent):
 
     def __init__(
             self,
-            x: int, y: int, width: int, height: int,
+            x: int, y: int, width: int, height: int, initial_value: bool,
             on_click: Callable[[], None] | None = None, surface_x=0, surface_y=0,
     ):
-        self.img_on_path = "UI/raw/UI_Flat_ButtonCheck01a.png"
-        self.img_off_path = "UI/raw/UI_Flat_Button01a_1.png"
+        self.img_on_path = "UI/raw/UI_Flat_ToggleOn03a.png"
+        self.img_off_path = "UI/raw/UI_Flat_ToggleOff03a.png"
 
-        self.initial_value = 0
+        self.initial_value = initial_value
         self.value = self.initial_value
 
-        self.img_button_default = Sprite(self.img_off_path, (height, height))
-        self.hitbox = pg.Rect(x + (width * self.initial_value / 100), y, height, height)
+        self.img_button_default = Sprite((self.img_on_path if self.initial_value else self.img_off_path), (width, height))
+        self.hitbox = pg.Rect(x + (width * self.initial_value / 100), y, width, height)
 
         self.box_on = Sprite(self.img_on_path, (width, height))
         self.box_off = Sprite(self.img_off_path, (width, height))
@@ -40,7 +40,7 @@ class Checkbox(UIComponent):
         self.surface_y = surface_y
 
     def get_value(self):
-        return int(self.value)
+        return bool(self.value)
 
     @override
     def update(self, dt: float) -> None:

@@ -39,18 +39,12 @@ class Entity:
     
     @property
     def camera(self) -> PositionCamera:
-        '''
-        [TODO HACAKTHON 3]
-        Implement the correct algorithm of player camera
-        '''
-        # Also consider Player's width and height
-        # print(self.game_manager.__dict__)
         return PositionCamera(int(self.position.x), int(self.position.y))
         
     def to_dict(self) -> dict[str, object]:
         return {
-            "x": self.position.x / GameSettings.TILE_SIZE,
-            "y": self.position.y / GameSettings.TILE_SIZE,
+            "x": round(self.position.x / GameSettings.TILE_SIZE, 1),
+            "y": round(self.position.y / GameSettings.TILE_SIZE, 1),
         }
         
     @classmethod

@@ -44,6 +44,8 @@ class GameManager:
         # Check If you should change scene
         self.should_change_scene = False
         self.next_map = ""
+
+        self.volume_data = {"value": 50, "mute": 0}
         
     @property
     def current_map(self) -> Map:
@@ -104,17 +106,15 @@ class GameManager:
         for key, m in self.maps.items():
             block = m.to_dict()
             block["enemy_trainers"] = [t.to_dict() for t in self.enemy_trainers.get(key, [])]
-            spawn = self.player_spawns.get(key)
-            block["player"] = {
-                "x": spawn["x"] / GameSettings.TILE_SIZE,
-                "y": spawn["y"] / GameSettings.TILE_SIZE
-            }
+
             map_blocks.append(block)
+        # print(self.player.position)
         return {
             "map": map_blocks,
             "current_map": self.current_map_key,
             "player": self.player.to_dict() if self.player is not None else None,
             "bag": self.bag.to_dict(),
+            "volume": self.volume_data,
         }
 
     @classmethod
@@ -131,6 +131,7 @@ class GameManager:
         trainers: dict[str, list[EnemyTrainer]] = {}
 
         for entry in maps_data:
+            # print("from dict")
             path = entry["path"]
             maps[path] = Map.from_dict(entry)
             sp = entry.get("player")
@@ -160,5 +161,10 @@ class GameManager:
         Logger.info("Loading bag")
         from src.data.bag import Bag as _Bag
         gm.bag = Bag.from_dict(data.get("bag", {})) if data.get("bag") else _Bag([], [])
+
+        if "volume" in data:
+            gm.volume_data = data["volume"]
+        else:
+            gm.volume_data = {"value": GameSettings.AUDIO_VOLUME, "mute": False}
 
         return gm

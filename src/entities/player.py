@@ -82,7 +82,6 @@ class Player(Entity):
         if tp:
             dest = tp.destination
             self.game_manager.switch_map(dest)
-                
         super().update(dt)
 
     @override

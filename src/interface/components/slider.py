@@ -20,7 +20,7 @@ class Slider(UIComponent):
             self,
             x: int, y: int, width: int, height: int, initial_value = 0, surface_x=0, surface_y=0,
     ):
-        img_path = "UI/raw/UI_Flat_Button02a_4.png"
+        img_path = "UI/raw/UI_Flat_FrameSlot01a.png"
 
         self.slider_background = pg.Rect(x, y, width, height)
         self.slider_background_start_x = x

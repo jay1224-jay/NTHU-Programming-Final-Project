@@ -17,7 +17,7 @@ class GameSettingSurface:
     _monsters_data: list[Monster]
     _items_data: list[Item]
 
-    def __init__(self):
+    def __init__(self, volume_data: dict):
 
         self.surface_width, self.surface_height = GameSettings.SCREEN_WIDTH//2, GameSettings.SCREEN_HEIGHT//2
         self.surface_x = GameSettings.SCREEN_WIDTH//2 - self.surface_width//2
@@ -32,7 +32,7 @@ class GameSettingSurface:
         self.load_button = Button(
             "UI/button_load.png", "UI/button_load_hover.png",
             20 + 10 + 50, self.surface_height - 50 - 20, 50, 50,
-            lambda: scene_manager.close_setting(), self.surface_x, self.surface_y
+            lambda: self.load(), self.surface_x, self.surface_y
         )
         self.back_button = Button(
             "UI/button_back.png", "UI/button_back_hover.png",
@@ -46,19 +46,34 @@ class GameSettingSurface:
         )
 
         self.volume_slider = Slider(
-            35, self.surface_height//2 - 20, self.surface_width - 70, 20, 50, self.surface_x, self.surface_y
+            35, self.surface_height//2 - 20, self.surface_width - 70, 20, volume_data.get("value"), self.surface_x, self.surface_y
         )
         self.game_font = pg.font.Font(GameSettings.GAME_FONT, 24)
 
         self.mute_checkbox = Checkbox(
-            155, self.surface_height//2 + 20 + 30 - 5, 25, 25,
+            155, self.surface_height//2 + 20 + 30 - 5, 35, 25, volume_data.get("mute"),
             lambda: self.mute(), self.surface_x, self.surface_y
         )
 
+        self.save_settings = False
+        self.load_settings = False
+
 
     def save(self):
+        """
+        game_manager = GameManager.load("saves/game0.json")
         Logger.debug(f"Set volume to {int(self.volume_slider.get_value())}%")
         sound_manager.set_bgm_volume(self.volume_slider.get_value()/100)
+        data = game_manager.to_dict()
+        data["volume"] = {"value": self.volume_slider.get_value(), "mute": self.mute_checkbox.get_value()}
+        game_manager = game_manager.from_dict(data)
+        game_manager.save("saves/game0.json")
+        """
+        self.save_settings = True
+        scene_manager.close_setting()
+
+    def load(self):
+        self.load_settings = True
         scene_manager.close_setting()
 
     def mute(self):

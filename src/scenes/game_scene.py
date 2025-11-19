@@ -12,6 +12,8 @@ from src.data import bag
 from .setting_surface import GameSettingSurface
 
 from src.interface.components import Button
+from ..core.managers import game_manager
+
 
 class GameScene(Scene):
     game_manager: GameManager
@@ -46,9 +48,17 @@ class GameScene(Scene):
             GameSettings.SCREEN_WIDTH - 75 - 50 - 10, 50, 50, 50,
             lambda: scene_manager.open_bag()
         )
+        data = self.game_manager.to_dict()
+        self.setting_surface = GameSettingSurface(data["volume"])
 
-        self.setting_surface = GameSettingSurface()
+    def save_settings(self):
+        self.game_manager.save("saves/game0.json")
+        self.setting_surface.save_settings = False
 
+    def load_settings(self):
+        self.game_manager = self.game_manager.load("saves/game0.json")
+        # self.
+        self.setting_surface.load_settings = False
 
     @override
     def enter(self) -> None:
@@ -65,6 +75,7 @@ class GameScene(Scene):
     def update(self, dt: float):
         # Check if there is assigned next scene
         self.game_manager.try_switch_map()
+        # print(self.game_manager.player.position)
         
         # Update player and other data
         if self.game_manager.player:
@@ -84,7 +95,11 @@ class GameScene(Scene):
                 self.game_manager.player.position.y,
                 self.game_manager.current_map.path_name
             )
-        
+        if self.setting_surface.save_settings:
+            self.save_settings()
+        if self.setting_surface.load_settings:
+            self.load_settings()
+
     @override
     def draw(self, screen: pg.Surface):
 

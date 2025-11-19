@@ -52,12 +52,19 @@ class GameScene(Scene):
         self.setting_surface = GameSettingSurface(data["volume"])
 
     def save_settings(self):
+        """
+        : Save Volume Settings
+
+        data = self.game_manager.to_dict()
+        data["volume"] = {"value": self.setting_surface.volume_slider.get_value(), "mute": self.setting_surface.mute_checkbox.get_value()}
+        self.game_manager.from_dict(data)
+        """
         self.game_manager.save("saves/game0.json")
         self.setting_surface.save_settings = False
 
     def load_settings(self):
         self.game_manager = self.game_manager.load("saves/game0.json")
-        # self.
+
         self.setting_surface.load_settings = False
 
     @override
@@ -122,9 +129,6 @@ class GameScene(Scene):
         for enemy in self.game_manager.current_enemy_trainers:
             enemy.draw(screen, camera)
 
-
-
-        
         if self.online_manager and self.game_manager.player:
             list_online = self.online_manager.get_list_players()
             for player in list_online:

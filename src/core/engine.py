@@ -30,6 +30,7 @@ class Engine:
         scene_manager.register_scene("game", GameScene())
         scene_manager.register_scene("setting", SettingScene())
 
+
         scene_manager.change_scene("menu")
         # scene_manager.change_scene("game")
 

@@ -8,7 +8,7 @@ from .entity import Entity
 from src.sprites import Sprite
 from src.core import GameManager
 from src.core.services import input_manager, scene_manager
-from src.utils import GameSettings, Direction, Position, PositionCamera
+from src.utils import GameSettings, Direction, Position, PositionCamera, Logger
 
 
 class EnemyTrainerClassification(Enum):
@@ -56,7 +56,7 @@ class EnemyTrainer(Entity):
         self._movement.update(self, dt)
         self._has_los_to_player()
         if self.detected and input_manager.key_pressed(pygame.K_SPACE):
-            pass
+            Logger.debug("Start Battling")
         self.animation.update_pos(self.position)
 
     @override
@@ -85,7 +85,21 @@ class EnemyTrainer(Entity):
         '''
         TODO: Create hitbox to detect line of sight of the enemies towards the player
         '''
-        return None
+        dx = 1
+        dy = 1
+        start_x = self.position.x
+        start_y = self.position.y
+        if self.los_direction == Direction.RIGHT:
+            dx = 3
+        elif self.los_direction == Direction.LEFT:
+            dx = 3
+            start_x = self.position.x - GameSettings.TILE_SIZE * 2
+        elif self.los_direction == Direction.DOWN:
+            dy = 3
+        else:
+            dy = 3
+            start_y = self.position.y - GameSettings.TILE_SIZE * 2
+        return pygame.Rect(start_x, start_y, GameSettings.TILE_SIZE*dx, GameSettings.TILE_SIZE*dy)
 
     def _has_los_to_player(self) -> None:
         player = self.game_manager.player
@@ -96,10 +110,11 @@ class EnemyTrainer(Entity):
         if los_rect is None:
             self.detected = False
             return
-        '''
-        TODO: Implement line of sight detection
-        If it's detected, set self.detected to True
-        '''
+
+        if los_rect.colliderect(player.animation.rect):
+            self.detected = True
+            return
+
         self.detected = False
 
     @classmethod

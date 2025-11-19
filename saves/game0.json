@@ -22,6 +22,20 @@
           "max_tiles": 2
         },
         {
+          "x": 15.0,
+          "y": 32.0,
+          "classification": "stationary",
+          "facing": "LEFT",
+          "max_tiles": 2
+        },
+        {
+          "x": 16.0,
+          "y": 32.0,
+          "classification": "stationary",
+          "facing": "RIGHT",
+          "max_tiles": 2
+        },
+        {
           "x": 54.0,
           "y": 16.0,
           "classification": "stationary",
@@ -65,8 +79,8 @@
   ],
   "current_map": "map.tmx",
   "player": {
-    "x": 25.3,
-    "y": 27.7
+    "x": 23.0,
+    "y": 27.0
   },
   "bag": {
     "monsters": [

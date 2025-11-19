@@ -79,8 +79,8 @@
   ],
   "current_map": "map.tmx",
   "player": {
-    "x": 23.0,
-    "y": 27.0
+    "x": 20.2,
+    "y": 30.3
   },
   "bag": {
     "monsters": [
@@ -104,20 +104,6 @@
         "max_hp": 180,
         "level": 32,
         "sprite_path": "menu_sprites/menusprite3.png"
-      },
-      {
-        "name": "Venusaur",
-        "hp": 90,
-        "max_hp": 160,
-        "level": 30,
-        "sprite_path": "menu_sprites/menusprite4.png"
-      },
-      {
-        "name": "Gengar",
-        "hp": 110,
-        "max_hp": 140,
-        "level": 28,
-        "sprite_path": "menu_sprites/menusprite5.png"
       },
       {
         "name": "Dragonite",
@@ -146,7 +132,7 @@
     ]
   },
   "volume": {
-    "value": 66,
-    "mute": false
+    "value": 27,
+    "mute": true
   }
 }

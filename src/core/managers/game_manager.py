@@ -106,7 +106,6 @@ class GameManager:
         for key, m in self.maps.items():
             block = m.to_dict()
             block["enemy_trainers"] = [t.to_dict() for t in self.enemy_trainers.get(key, [])]
-
             map_blocks.append(block)
         # print(self.player.position)
         return {

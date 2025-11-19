@@ -5,7 +5,7 @@ import pygame as pg
 
 from src.sprites import Sprite
 from src.core.services import input_manager
-from src.utils import Logger
+from src.utils import Logger, TextDrawer
 from typing import Callable, override
 from .component import UIComponent
 
@@ -20,7 +20,7 @@ class Button(UIComponent):
         self,
         img_path: str, img_hovered_path:str,
         x: int, y: int, width: int, height: int,
-        on_click: Callable[[], None] | None = None, surface_x=0, surface_y=0,
+        on_click: Callable[[], None] | None = None, surface_x=0, surface_y=0, label = None
     ):
         self.img_button_default = Sprite(img_path, (width, height))
         self.hitbox = pg.Rect(x, y, width, height)
@@ -34,6 +34,9 @@ class Button(UIComponent):
         self.surface_x = surface_x
         self.surface_y = surface_y
 
+        self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
+        self.label = label
+
     @override
     def update(self, dt: float) -> None:
         if self.hitbox.collidepoint((input_manager.mouse_pos[0]-self.surface_x, input_manager.mouse_pos[1]-self.surface_y)):
@@ -45,8 +48,11 @@ class Button(UIComponent):
     
     @override
     def draw(self, screen: pg.Surface) -> None:
+        screen.blit(self.img_button_default.image, self.hitbox)
+        if self.label:
+            self.text_drawer.draw(screen, self.label, 18,
+                    (self.hitbox.x + self.hitbox.width//2, self.hitbox.y + self.hitbox.height//2), align="center")
 
-        _ = screen.blit(self.img_button_default.image, self.hitbox)
 
 def main():
     import sys

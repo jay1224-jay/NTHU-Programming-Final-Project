@@ -14,6 +14,9 @@ class SceneManager:
         self._scenes = {}
         self.bag_opened = False
         self.setting_opened = False
+        self._scene_transition_done = False
+
+        self.alpha = 0
 
     def close_bag(self):
         self.bag_opened = False
@@ -48,6 +51,10 @@ class SceneManager:
     def draw(self, screen: pg.Surface) -> None:
         if self._current_scene:
             self._current_scene.draw(screen)
+
+    def _perform_fade_in(self) -> None:
+        print(self.alpha)
+
             
     def _perform_scene_switch(self) -> None:
         if self._next_scene is None:
@@ -56,9 +63,10 @@ class SceneManager:
         # Exit current scene
         if self._current_scene:
             self._current_scene.exit()
-        
+
         self._current_scene = self._scenes[self._next_scene]
-        
+
+
         # Enter new scene
         if self._current_scene:
             Logger.info(f"Entering {self._next_scene} scene")

@@ -57,6 +57,7 @@ class EnemyTrainer(Entity):
         self._has_los_to_player()
         if self.detected and input_manager.key_pressed(pygame.K_SPACE):
             Logger.debug("Start Battling")
+            scene_manager.change_scene("battle")
         self.animation.update_pos(self.position)
 
     @override

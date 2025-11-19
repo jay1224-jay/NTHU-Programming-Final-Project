@@ -14,9 +14,6 @@ from src.sprites import Sprite
 from typing import override
 
 class GameSettingSurface:
-    _monsters_data: list[Monster]
-    _items_data: list[Item]
-
     def __init__(self, volume_data: dict):
 
         self.surface_width, self.surface_height = GameSettings.SCREEN_WIDTH//2, GameSettings.SCREEN_HEIGHT//2

@@ -6,7 +6,7 @@ import time
 
 from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
-from src.utils import Logger, PositionCamera, GameSettings, Position
+from src.utils import Logger, PositionCamera, GameSettings, Position, TextDrawer
 from src.core.services import scene_manager, sound_manager
 from src.sprites import Sprite
 from typing import override
@@ -30,22 +30,8 @@ class Bag:
             lambda: scene_manager.close_bag(), self.surface_x, self.surface_y
         )
 
-        self.game_fonts = {}
-        for _size in range(10, 27, 2):
-            self.game_fonts[_size] = pg.font.Font(GameSettings.GAME_FONT, _size)
+        self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
-        # self.back_button.screen_pos = Position(self.surface_x, self.surface_y)
-
-    def draw_text(self, screen, text, text_col, x, y, size, align="left"):
-        game_font = self.game_fonts[size]
-        img = game_font.render(text, True, text_col)
-        if align == "left":
-            rect = img.get_rect(topleft=(x, y))
-        elif align == "right":
-            rect = img.get_rect(topright=(x, y))
-        else:
-            rect = img.get_rect(topleft=(x, y))
-        screen.blit(img, rect)
 
     def update(self, dt: float):
         self.close_button.update(dt)
@@ -54,16 +40,17 @@ class Bag:
         if scene_manager.bag_opened:
             self.bag_surface.fill("ORANGE")
             self.close_button.draw(self.bag_surface)
-            self.draw_text(self.bag_surface, "BAG", "black", 10, 10, 26)
+            self.text_drawer.draw(self.bag_surface, "BAG", 26, (10, 10))
 
             # Draw items
             i = 0
             for item in self._items_data:
                 item_sprite = Sprite(item["sprite_path"], (30, 30))
                 self.bag_surface.blit(item_sprite.image, (400, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40))
-                self.draw_text(self.bag_surface, item["name"], "black", 400 + 30 + 30, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7, 16)
-                self.draw_text(self.bag_surface, f"x{item["count"]}", "black", 400 + 30 + 150,
-                               self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7, 16, "right")
+                self.text_drawer.draw(self.bag_surface, item["name"], 16,
+                                      (400 + 30 + 30, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7))
+                self.text_drawer.draw(self.bag_surface, f"x{item["count"]}", 16, (400 + 30 + 150,
+                               self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7), "right")
                 i += 1
 
             # Draw monster, name, hp, max_hp, level
@@ -82,8 +69,8 @@ class Bag:
 
                 monster_sprite = Sprite(monster["sprite_path"], (sprite_size, sprite_size))
                 monster_surface.blit(monster_sprite.image,(0,  -5))
-                self.draw_text(monster_surface, monster["name"], "black", 30 + 25,10 , 14)
-                self.draw_text(monster_surface, "Lv" + str(monster["level"]), "black", 15 + 115, 25, 12)
+                self.text_drawer.draw(monster_surface, monster["name"], 14, (30 + 25,10))
+                self.text_drawer.draw(monster_surface, "Lv" + str(monster["level"]), 12, (15 + 115, 25))
 
                 # hp
                 background_rect = pg.Rect(30 + 25,  25, background_rect_width, background_rect_height)
@@ -91,7 +78,7 @@ class Bag:
                 hp_rect = pg.Rect(30 + 25, 25,
                                           int(background_rect_width * monster["hp"] / monster["max_hp"]), background_rect_height)
                 pg.draw.rect(monster_surface, (50, 200, 50), hp_rect)
-                self.draw_text(monster_surface, f"{monster["hp"]}/{monster["max_hp"]}", "black",  30 + 25,40, 10)
+                self.text_drawer.draw(monster_surface, f"{monster["hp"]}/{monster["max_hp"]}", 10,  (30 + 25,40))
                 self.bag_surface.blit(monster_surface, (start_x + 15, start_y + i * (monster_surface_height + 5) + 40))
                 i += 1
 

@@ -14,6 +14,7 @@ class Map:
     # Rendering Properties
     _surface: pg.Surface
     _collision_map: list[pg.Rect]
+    _bush_map: list[pg.Rect]
 
     def __init__(self, path: str, tp: list[Teleport], spawn: Position):
         self.path_name = path
@@ -29,6 +30,7 @@ class Map:
         self._render_all_layers(self._surface)
         # Prebake the collision map
         self._collision_map = self._create_collision_map()
+        self._bush_map = self._create_bush_map()
 
     def update(self, dt: float):
         return
@@ -52,18 +54,12 @@ class Map:
             self._surface.set_alpha(255)
         '''
     def check_collision(self, rect: pg.Rect) -> bool:
-        '''
-        [TODO HACKATHON 4]
-        Return True if collide if rect param collide with self._collision_map
-        Hint: use API colliderect and iterate each rectangle to check
-        '''
-        # print("Collision")
-        # print(any(rect.colliderect(r) for r in self._collision_map))
         return any(rect.colliderect(r) for r in self._collision_map)
+
+    def check_bush(self, rect: pg.Rect) -> bool:
+        return any(rect.colliderect(x) for x in self._bush_map)
         
     def check_teleport(self, pos: Position) -> Teleport | None:
-        '''TODO: Teleportation'''
-        # error_range = GameSettings.TILE_SIZE
         error_range = GameSettings.TILE_SIZE
         # print(self.teleporters)
         for i in self.teleporters:
@@ -102,6 +98,15 @@ class Map:
                         Append the collision rectangle to the rects[] array
                         Remember scale the rectangle with the TILE_SIZE from settings
                         '''
+                        rects.append(pg.Rect(x * GameSettings.TILE_SIZE, y * GameSettings.TILE_SIZE, GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
+        return rects
+
+    def _create_bush_map(self):
+        rects = []
+        for layer in self.tmxdata.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer) and ("PokemonBush" == layer.name):
+                for x, y, gid in layer:
+                    if gid != 0:
                         rects.append(pg.Rect(x * GameSettings.TILE_SIZE, y * GameSettings.TILE_SIZE, GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
         return rects
 

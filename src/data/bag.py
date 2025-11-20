@@ -27,17 +27,23 @@ class Bag:
         self.close_button = Button(
             "UI/button_x.png", "UI/button_x_hover.png",
             self.surface_width - 20 - 30, 20, 40, 40,
-            lambda: scene_manager.close_bag(), self.surface_x, self.surface_y
+            lambda: self.close_bag(), self.surface_x, self.surface_y
         )
-
+        self.not_updating_bag = False
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
+    def close_bag(self):
+        self.not_updating_bag = True
+        scene_manager.close_bag()
 
     def update(self, dt: float):
         self.close_button.update(dt)
 
     def draw(self, screen: pg.Surface):
         if scene_manager.bag_opened:
+            if self.not_updating_bag:
+                self._monsters_data = GameManager.load("saves/game0.json").to_dict()["bag"]["monsters"]
+                self.not_updating_bag = False
             self.bag_surface.fill("ORANGE")
             self.close_button.draw(self.bag_surface)
             self.text_drawer.draw(self.bag_surface, "BAG", 26, (10, 10))

@@ -24,6 +24,7 @@ class GameScene(Scene):
         super().__init__()
         # Game Manager
         manager = GameManager.load("saves/game0.json")
+        self.game_manager = manager
         if manager is None:
             Logger.error("Failed to load game manager")
             exit(1)

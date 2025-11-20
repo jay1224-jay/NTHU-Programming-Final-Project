@@ -9,6 +9,8 @@ class TextDrawer:
             self._font_sizes[_size] = pg.font.Font(font, _size)
 
     def draw(self, screen, text, size, position, align="left", color="black"):
+        if size not in self._font_sizes.keys():
+            self._font_sizes[size] = pg.font.Font(self.font, size)
         _font = self._font_sizes[size]
         img = _font.render(text, True, color)
         x = position[0]

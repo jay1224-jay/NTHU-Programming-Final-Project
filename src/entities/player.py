@@ -5,10 +5,12 @@ import dis
 import pygame as pg
 from .entity import Entity
 from src.core.services import input_manager, scene_manager
-from src.utils import Position, PositionCamera, GameSettings, Logger
+from src.utils import Position, PositionCamera, GameSettings, Logger, TextDrawer
 from src.core import GameManager
 import math
 from typing import override
+from src.sprites import Sprite
+from src.utils import GameSettings
 
 class Player(Entity):
     speed: float = 4.0 * GameSettings.TILE_SIZE
@@ -16,6 +18,9 @@ class Player(Entity):
 
     def __init__(self, x: float, y: float, game_manager: GameManager) -> None:
         super().__init__(x, y, game_manager)
+        self.show_warning_sign = False
+        self.warning_sign = Sprite("exclamation.png", (GameSettings.TILE_SIZE // 2, GameSettings.TILE_SIZE // 2))
+        self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
     @override
     def update(self, dt: float) -> None:
@@ -67,8 +72,6 @@ class Player(Entity):
 
         if self.game_manager.check_collision(pg.Rect(x, y, width, height)):
             x = self._snap_to_grid(x)
-
-
         y = self.position.y + dis.y
         if self.game_manager.check_collision(pg.Rect(x, y, width, height)):
             y = self._snap_to_grid(y)
@@ -76,6 +79,15 @@ class Player(Entity):
         if not scene_manager.bag_opened and not scene_manager.setting_opened:
             self.position = Position(x, y)
         # self.position = Position(self.position
+
+        if self.game_manager.check_bush(pg.Rect(x, y, width, height)):
+            self.show_warning_sign = True
+            if input_manager.key_pressed(pg.K_SPACE):
+                Logger.debug("Entering Bush")
+                scene_manager.change_scene("battle")
+        else:
+            self.show_warning_sign = False
+
 
         # Check teleportation
         tp = self.game_manager.current_map.check_teleport(self.position)
@@ -86,7 +98,11 @@ class Player(Entity):
 
     @override
     def draw(self, screen: pg.Surface, camera: PositionCamera) -> None:
+
         super().draw(screen, camera)
+        if self.show_warning_sign:
+            self.text_drawer.draw(screen, "Press space to enter the bush", 30, (GameSettings.TILE_SIZE-20, 5), "left", color="black")
+            self.warning_sign.draw(screen)
         
     @override
     def to_dict(self) -> dict[str, object]:

@@ -1,7 +1,7 @@
 import pygame as pg
 
 from src.core.managers import game_manager
-from src.utils import GameSettings, TextDrawer
+from src.utils import GameSettings, TextDrawer, Logger
 from src.sprites import BackgroundSprite
 from src.scenes.scene import Scene
 from src.interface.components import Button
@@ -78,7 +78,7 @@ class BattleScene(Scene):
         self.start_fighting = 1
 
     def player_attack(self):
-        if self.attack_turn % 2 == 0:
+        if self.attack_turn % 2 == 0 and self.bag._monsters_data[self.current_monster]["hp"]:
             self.opponent_monster["hp"] -= self.bag._monsters_data[self.current_monster]["level"]
             self.attack_time_lapse = 0
             if self.opponent_monster["hp"] <= 0:
@@ -90,8 +90,8 @@ class BattleScene(Scene):
 
     def enemy_attack(self):
         # print(self.attack_time_lapse)
-        if self.attack_turn % 2 == 1:
-            if self.attack_time_lapse >= 1: # delay
+        if self.attack_turn % 2 == 1 and self.opponent_monster["hp"]:
+            if self.attack_time_lapse >= 0.5: # delay
                 self.bag._monsters_data[self.current_monster]["hp"] -= self.opponent_monster["level"]
                 if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
                     self.bag._monsters_data[self.current_monster]["hp"] = 0
@@ -133,6 +133,14 @@ class BattleScene(Scene):
         : Save Monster Data After Exiting The Battle Scene
         """
         self.start_fighting = 0
+        if self.battle_winner == "player":
+            self.opponent_monster["hp"] = self.opponent_monster["max_hp"]
+            Logger.debug("Saving New Acquired Monster Data")
+            _game_manager = GameManager.load("saves/game0.json")
+            data = _game_manager.to_dict()
+            data["bag"]["monsters"].append(self.opponent_monster)
+            _game_manager = _game_manager.from_dict(data)
+            _game_manager.save("saves/game0.json")
         print("Exiting Battle Scene...")
 
     @override

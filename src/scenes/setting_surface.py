@@ -57,15 +57,6 @@ class GameSettingSurface:
 
 
     def save(self):
-        """
-        game_manager = GameManager.load("saves/game0.json")
-        Logger.debug(f"Set volume to {int(self.volume_slider.get_value())}%")
-        sound_manager.set_bgm_volume(self.volume_slider.get_value()/100)
-        data = game_manager.to_dict()
-        data["volume"] = {"value": self.volume_slider.get_value(), "mute": self.mute_checkbox.get_value()}
-        game_manager = game_manager.from_dict(data)
-        game_manager.save("saves/game0.json")
-        """
         self.save_settings = True
         scene_manager.close_setting()
 

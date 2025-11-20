@@ -79,7 +79,7 @@
   ],
   "current_map": "map.tmx",
   "player": {
-    "x": 20.2,
+    "x": 23.9,
     "y": 30.3
   },
   "bag": {
@@ -132,7 +132,7 @@
     ]
   },
   "volume": {
-    "value": 27,
+    "value": 66,
     "mute": true
   }
 }

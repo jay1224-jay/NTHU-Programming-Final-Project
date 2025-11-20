@@ -60,22 +60,45 @@ class BattleScene(Scene):
             surface_x=self.option_surface_x, surface_y=self.option_surface_y,
         )
 
+        self.fight_button = Button(
+            "UI/raw/UI_Flat_Button02a_4.png", "UI/raw/UI_Flat_Button02a_2.png",
+            self.option_surface_width // 2, 50, 100, 50,
+            lambda: self.start_fight(), label="FIGHT",
+            surface_x=self.option_surface_x, surface_y=self.option_surface_y,
+        )
+
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
         self.battle_winner = None
+        self.msg = None
+        self.attack_turn = 0
+        self.attack_time_lapse = 0
+        self.start_fighting = 0
 
+    def start_fight(self):
+        self.start_fighting = 1
 
     def player_attack(self):
-        self.opponent_monster["hp"] -= self.bag._monsters_data[self.current_monster]["level"]
-        if self.opponent_monster["hp"] <= 0:
-            self.opponent_monster["hp"] = 0
-            self.battle_winner = "player"
-        self.enemy_attack()
+        if self.attack_turn % 2 == 0:
+            self.opponent_monster["hp"] -= self.bag._monsters_data[self.current_monster]["level"]
+            self.attack_time_lapse = 0
+            if self.opponent_monster["hp"] <= 0:
+                self.opponent_monster["hp"] = 0
+                self.battle_winner = "player"
+                self.msg = "You win!"
+                sound_manager.play_bgm("RBY 108 Victory! (Trainer).ogg")
+            self.attack_turn += 1
 
     def enemy_attack(self):
-        self.bag._monsters_data[self.current_monster]["hp"] -= self.opponent_monster["level"]
-        if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
-            self.bag._monsters_data[self.current_monster]["hp"] = 0
-            self.battle_winner = "enemy"
+        # print(self.attack_time_lapse)
+        if self.attack_turn % 2 == 1:
+            if self.attack_time_lapse >= 1: # delay
+                self.bag._monsters_data[self.current_monster]["hp"] -= self.opponent_monster["level"]
+                if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
+                    self.bag._monsters_data[self.current_monster]["hp"] = 0
+                    self.battle_winner = "enemy"
+                    self.msg = "Your monster is dead!"
+                self.attack_turn += 1
+
 
     def next_monster(self):
         self.current_monster += 1
@@ -87,6 +110,11 @@ class BattleScene(Scene):
         self.current_monster = 0
         self.run_button.label = "RUN"
         self.battle_winner = None
+        self.msg = None
+        self.attack_turn = 0
+        self.attack_time_lapse = 0
+        self.start_fighting = 0
+
 
         _max_hp = randint(100, 200)
         _chosen_monster = randint(0, len(MONSTERS) - 1)
@@ -104,17 +132,24 @@ class BattleScene(Scene):
         """
         : Save Monster Data After Exiting The Battle Scene
         """
+        self.start_fighting = 0
         print("Exiting Battle Scene...")
 
     @override
     def update(self, dt: float) -> None:
-        if self.battle_winner == "player":
+        if self.battle_winner:
             self.run_button.label = "LEAVE"
         self.run_button.update(dt)
         if self.bag is not None:
-            if self.bag._monsters_data[self.current_monster]["hp"] > 0:
+            if self.bag._monsters_data[self.current_monster]["hp"] > 0 and self.start_fighting:
                 self.attack_button.update(dt)
-        self.next_button.update(dt)
+
+        if not self.start_fighting:
+            self.fight_button.update(dt)
+            self.next_button.update(dt)
+        self.attack_time_lapse = (self.attack_time_lapse + dt) % 5
+
+        self.enemy_attack()
 
     @override
     def draw(self, screen: pg.Surface) -> None:
@@ -171,9 +206,15 @@ class BattleScene(Scene):
         screen.blit(opponent_monster_info_surface, (1000, 300))
 
         self.run_button.draw(self.option_surface)
-        if self.opponent_monster["hp"] > 0 and monster["hp"] > 0    :
+        if self.opponent_monster["hp"] > 0 and monster["hp"] > 0 and self.start_fighting:
             self.attack_button.draw(self.option_surface)
-        self.next_button.draw(self.option_surface)
+
+        if not self.start_fighting:
+            self.fight_button.draw(self.option_surface)
+
+            self.next_button.draw(self.option_surface)
+
+        self.text_drawer.draw(self.option_surface, self.msg, 20, (10, 10), color="white", align="left")
 
         screen.blit(self.option_surface, (self.option_surface_x, self.option_surface_y))
 
@@ -181,7 +222,6 @@ class BattleScene(Scene):
             screen.blit(pg.transform.grayscale(pg.transform.flip(monster_sprite.image, 1, 0)), (150, 300))
         else:
             screen.blit(pg.transform.flip(monster_sprite.image, 1, 0), (150, 300))
-
 
         if self.opponent_monster["hp"] <= 0:
             screen.blit(pg.transform.grayscale(opponent_monster_sprite.image), (800, 200))

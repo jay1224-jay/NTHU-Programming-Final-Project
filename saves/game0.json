@@ -86,31 +86,24 @@
     "monsters": [
       {
         "name": "Pikachu",
-        "hp": 85,
+        "hp": 7,
         "max_hp": 100,
         "level": 25,
         "sprite_path": "menu_sprites/menusprite1.png"
       },
       {
-        "name": "Charizard",
-        "hp": 150,
-        "max_hp": 200,
-        "level": 36,
-        "sprite_path": "menu_sprites/menusprite2.png"
+        "name": "Pickachu",
+        "hp": 139,
+        "max_hp": 139,
+        "level": 130,
+        "sprite_path": "menu_sprites/menusprite1.png"
       },
       {
         "name": "Blastoise",
-        "hp": 120,
-        "max_hp": 180,
-        "level": 32,
+        "hp": 121,
+        "max_hp": 121,
+        "level": 5,
         "sprite_path": "menu_sprites/menusprite3.png"
-      },
-      {
-        "name": "Dragonite",
-        "hp": 180,
-        "max_hp": 220,
-        "level": 40,
-        "sprite_path": "menu_sprites/menusprite6.png"
       }
     ],
     "items": [

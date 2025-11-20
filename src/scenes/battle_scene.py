@@ -49,7 +49,7 @@ class BattleScene(Scene):
         self.attack_button = Button(
             "UI/raw/UI_Flat_Button02a_4.png", "UI/raw/UI_Flat_Button02a_2.png",
             self.option_surface_width//2, 50, 100, 50,
-            lambda: self.player_attack(), label="ATTACK",
+            lambda: self.start_attack(), label="ATTACK",
             surface_x=self.option_surface_x, surface_y=self.option_surface_y,
         )
 
@@ -67,37 +67,56 @@ class BattleScene(Scene):
             surface_x=self.option_surface_x, surface_y=self.option_surface_y,
         )
 
+        self.opponent_sprite_size = 200
+        self.monster_sprite_size = 200
+
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
         self.battle_winner = None
         self.msg = None
         self.attack_turn = 0
         self.attack_time_lapse = 0
         self.start_fighting = 0
+        self.start_attacking = 0
+
+    def start_attack(self):
+        self.attack_time_lapse = 0
+        self.start_attacking = True
 
     def start_fight(self):
         self.start_fighting = 1
 
     def player_attack(self):
-        if self.attack_turn % 2 == 0 and self.bag._monsters_data[self.current_monster]["hp"]:
-            self.opponent_monster["hp"] -= self.bag._monsters_data[self.current_monster]["level"]
-            self.attack_time_lapse = 0
-            if self.opponent_monster["hp"] <= 0:
-                self.opponent_monster["hp"] = 0
-                self.battle_winner = "player"
-                self.msg = "You win!"
-                sound_manager.play_bgm("RBY 108 Victory! (Trainer).ogg")
-            self.attack_turn += 1
+        if self.start_attacking:
+            if self.attack_turn % 2 == 0 and self.bag._monsters_data[self.current_monster]["hp"]:
+                if self.attack_time_lapse >= 1:
+                    self.opponent_monster["hp"] -= self.bag._monsters_data[self.current_monster]["level"]
+                    self.attack_time_lapse = 0
+                    self.monster_sprite_size = 200
+                    if self.opponent_monster["hp"] <= 0:
+                        self.opponent_monster["hp"] = 0
+                        self.battle_winner = "player"
+                        self.msg = "You win!"
+                        sound_manager.play_bgm("RBY 108 Victory! (Trainer).ogg")
+                    self.attack_turn += 1
+                else:
+                    if self.attack_time_lapse >= 0.5:
+                        self.monster_sprite_size += 1
 
     def enemy_attack(self):
-        # print(self.attack_time_lapse)
         if self.attack_turn % 2 == 1 and self.opponent_monster["hp"]:
-            if self.attack_time_lapse >= 0.5: # delay
+            if self.attack_time_lapse >= 1: # delay
+                self.opponent_sprite_size = 200
+                self.attack_time_lapse = 0
                 self.bag._monsters_data[self.current_monster]["hp"] -= self.opponent_monster["level"]
                 if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
                     self.bag._monsters_data[self.current_monster]["hp"] = 0
                     self.battle_winner = "enemy"
                     self.msg = "Your monster is dead!"
                 self.attack_turn += 1
+                self.start_attacking = False
+            else:
+                if self.attack_time_lapse >= 0.5:
+                    self.opponent_sprite_size += 1
 
 
     def next_monster(self):
@@ -133,11 +152,13 @@ class BattleScene(Scene):
         : Save Monster Data After Exiting The Battle Scene
         """
         self.start_fighting = 0
+        self.start_attacking = 0
         if self.battle_winner == "player":
             self.opponent_monster["hp"] = self.opponent_monster["max_hp"]
             Logger.debug("Saving New Acquired Monster Data")
             _game_manager = GameManager.load("saves/game0.json")
             data = _game_manager.to_dict()
+            data["bag"]["monsters"][self.current_monster]["hp"] = self.bag._monsters_data[self.current_monster]["hp"]
             data["bag"]["monsters"].append(self.opponent_monster)
             _game_manager = _game_manager.from_dict(data)
             _game_manager.save("saves/game0.json")
@@ -156,7 +177,7 @@ class BattleScene(Scene):
             self.fight_button.update(dt)
             self.next_button.update(dt)
         self.attack_time_lapse = (self.attack_time_lapse + dt) % 5
-
+        self.player_attack()
         self.enemy_attack()
 
     @override
@@ -171,8 +192,7 @@ class BattleScene(Scene):
         self.background.draw(screen)
 
         monster = self.bag._monsters_data[self.current_monster]
-        sprite_size = 200
-        monster_sprite = Sprite(monster["sprite_path"], (sprite_size, sprite_size))
+        monster_sprite = Sprite(monster["sprite_path"], (self.monster_sprite_size, self.monster_sprite_size))
 
 
         background_rect_width = 70
@@ -195,7 +215,7 @@ class BattleScene(Scene):
         screen.blit(monster_info_surface, (25, 500))
 
         # opponent
-        opponent_monster_sprite = Sprite(self.opponent_monster["sprite_path"], (sprite_size, sprite_size))
+        opponent_monster_sprite = Sprite(self.opponent_monster["sprite_path"], (self.opponent_sprite_size, self.opponent_sprite_size))
         opponent_monster_info_surface_width = 170
         opponent_monster_info_surface_height = 50
         opponent_monster_info_surface = pg.Surface((opponent_monster_info_surface_width, opponent_monster_info_surface_height))
@@ -213,14 +233,14 @@ class BattleScene(Scene):
                               (25 - offset + 70, 40))
         screen.blit(opponent_monster_info_surface, (1000, 300))
 
-        self.run_button.draw(self.option_surface)
         if self.opponent_monster["hp"] > 0 and monster["hp"] > 0 and self.start_fighting:
             self.attack_button.draw(self.option_surface)
 
         if not self.start_fighting:
             self.fight_button.draw(self.option_surface)
-
             self.next_button.draw(self.option_surface)
+        if not self.start_fighting or self.battle_winner or monster["hp"] <= 0:
+            self.run_button.draw(self.option_surface)
 
         self.text_drawer.draw(self.option_surface, self.msg, 20, (10, 10), color="white", align="left")
 

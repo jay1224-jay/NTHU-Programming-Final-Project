@@ -29,7 +29,7 @@ class Bag:
             self.surface_width - 20 - 30, 20, 40, 40,
             lambda: self.close_bag(), self.surface_x, self.surface_y
         )
-        self.not_updating_bag = False
+        self.not_updating_bag = True
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
     def close_bag(self):

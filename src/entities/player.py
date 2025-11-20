@@ -42,9 +42,6 @@ class Player(Entity):
 
 
         d = self.speed * dt
-        if input_manager.key_down(pg.K_LSHIFT):
-            d *= 1.5
-            # print("Accelarate")
 
         if input_manager.key_down(pg.K_LEFT) or input_manager.key_down(pg.K_a):
             dis.x -= d

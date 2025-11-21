@@ -81,7 +81,7 @@ class Player(Entity):
             self.show_warning_sign = True
             if input_manager.key_pressed(pg.K_SPACE):
                 Logger.debug("Entering Bush")
-                scene_manager.change_scene("battle")
+                scene_manager.change_scene("catch")
         else:
             self.show_warning_sign = False
 

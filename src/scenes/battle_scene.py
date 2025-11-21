@@ -153,13 +153,17 @@ class BattleScene(Scene):
         """
         self.start_fighting = 0
         self.start_attacking = 0
-        if self.battle_winner == "player":
+        if self.battle_winner:
             self.opponent_monster["hp"] = self.opponent_monster["max_hp"]
             Logger.debug("Saving New Acquired Monster Data")
             _game_manager = GameManager.load("saves/game0.json")
             data = _game_manager.to_dict()
             data["bag"]["monsters"][self.current_monster]["hp"] = self.bag._monsters_data[self.current_monster]["hp"]
-            data["bag"]["monsters"].append(self.opponent_monster)
+            # print(self.bag._monsters_data[self.current_monster])
+            if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
+                del data["bag"]["monsters"][self.current_monster]
+            if self.battle_winner == "player":
+                data["bag"]["monsters"].append(self.opponent_monster)
             _game_manager = _game_manager.from_dict(data)
             _game_manager.save("saves/game0.json")
         print("Exiting Battle Scene...")
@@ -233,7 +237,7 @@ class BattleScene(Scene):
                               (25 - offset + 70, 40))
         screen.blit(opponent_monster_info_surface, (1000, 300))
 
-        if self.opponent_monster["hp"] > 0 and monster["hp"] > 0 and self.start_fighting:
+        if self.opponent_monster["hp"] > 0 and monster["hp"] > 0 and self.start_fighting and self.attack_turn % 2 == 0:
             self.attack_button.draw(self.option_surface)
 
         if not self.start_fighting:

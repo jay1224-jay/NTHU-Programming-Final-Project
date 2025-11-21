@@ -42,7 +42,9 @@ class Bag:
     def draw(self, screen: pg.Surface):
         if scene_manager.bag_opened:
             if self.not_updating_bag:
-                self._monsters_data = GameManager.load("saves/game0.json").to_dict()["bag"]["monsters"]
+                _data = GameManager.load("saves/game0.json").to_dict()["bag"]
+                self._monsters_data = _data["monsters"]
+                self._items_data = _data["items"]
                 self.not_updating_bag = False
             self.bag_surface.fill("ORANGE")
             self.close_button.draw(self.bag_surface)

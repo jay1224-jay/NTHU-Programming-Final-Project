@@ -106,7 +106,7 @@ class Map:
         for layer in self.tmxdata.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer) and ("PokemonBush" == layer.name):
                 for x, y, gid in layer:
-                    if gid != 0:
+                    if gid != 0 and gid > 30:
                         rects.append(pg.Rect(x * GameSettings.TILE_SIZE, y * GameSettings.TILE_SIZE, GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
         return rects
 

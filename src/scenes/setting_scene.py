@@ -49,7 +49,7 @@ class SettingScene(Scene):
 
     @override
     def enter(self) -> None:
-        sound_manager.play_bgm("RBY 102 Opening (Part 2).ogg")
+        sound_manager.play_bgm("RBY 101 Opening (Part 1).ogg")
         self.data = GameManager.load("saves/game0.json").to_dict()["volume"]
 
     @override
@@ -57,7 +57,7 @@ class SettingScene(Scene):
         pass
 
     def mute(self):
-        if self.mute_checkbox.get_value():
+        if self.mute_checkbox.get_value() or False:
             Logger.debug(f"Mute checkbox muted")
             sound_manager.set_bgm_volume(0)
 
@@ -66,6 +66,7 @@ class SettingScene(Scene):
         self.back_button.update(dt)
         self.volume_slider.update(dt)
         self.mute_checkbox.update(dt)
+        sound_manager.set_bgm_volume(self.volume_slider.get_value())
 
     def draw(self, screen: pg.Surface):
 

@@ -47,13 +47,15 @@ class PositionCamera:
 class Teleport:
     pos: Position
     destination: str
+    target_pos: Position
     
     @overload
-    def __init__(self, x: int, y: int, destination: str) -> None: ...
+    def __init__(self, x: int, y: int, destination: str, target_pos = None) -> None: ...
     @overload
-    def __init__(self, pos: Position, destination: str) -> None: ...
+    def __init__(self, pos: Position, destination: str, target_pos = None) -> None: ...
 
     def __init__(self, *args, **kwargs):
+        self.target_pos = kwargs.get('target_pos', None)
         if isinstance(args[0], Position):
             self.pos = args[0]
             self.destination = args[1]
@@ -63,15 +65,32 @@ class Teleport:
             self.destination = dest
     
     def to_dict(self):
-        return {
+        data = {
             "x": self.pos.x // GameSettings.TILE_SIZE,
             "y": self.pos.y // GameSettings.TILE_SIZE,
-            "destination": self.destination
+            "destination": self.destination,
+            "target_pos": {"destination_x": 0, "destination_y": 0},
         }
+        if self.target_pos:
+            data["target_pos"]["destination_x"] = self.target_pos.x // GameSettings.TILE_SIZE
+            data["target_pos"]["destination_y"] = self.target_pos.y // GameSettings.TILE_SIZE
+        return data
     
     @classmethod
     def from_dict(cls, data: dict):
-        return cls(data["x"] * GameSettings.TILE_SIZE, data["y"] * GameSettings.TILE_SIZE, data["destination"])
+        print(data)
+        target = None
+        if "target_pos" in data:
+            target = Position(
+                data["target_pos"]["destination_x"] * GameSettings.TILE_SIZE,
+                data["target_pos"]["destination_y"] * GameSettings.TILE_SIZE
+            )
+        return cls(
+            data["x"] * GameSettings.TILE_SIZE,
+            data["y"] * GameSettings.TILE_SIZE,
+            data["destination"],
+            target_pos=target  # Pass the new target
+        )
     
 class Monster(TypedDict):
     name: str

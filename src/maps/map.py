@@ -16,11 +16,12 @@ class Map:
     _collision_map: list[pg.Rect]
     _bush_map: list[pg.Rect]
 
-    def __init__(self, path: str, tp: list[Teleport], spawn: Position):
+    def __init__(self, path: str, tp: list[Teleport], spawn = None, target_pos = None):
         self.path_name = path
         self.tmxdata = load_tmx(path)
         self.spawn = spawn
         self.teleporters = tp
+        self.target_pos = target_pos
 
         pixel_w = self.tmxdata.width * GameSettings.TILE_SIZE
         pixel_h = self.tmxdata.height * GameSettings.TILE_SIZE
@@ -92,12 +93,6 @@ class Map:
             if isinstance(layer, pytmx.TiledTileLayer) and ("collision" in layer.name.lower() or "house" in layer.name.lower()):
                 for x, y, gid in layer:
                     if gid != 0:
-                        '''
-                        [TODO HACKATHON 4]
-                        rects.append(pg.Rect(...))
-                        Append the collision rectangle to the rects[] array
-                        Remember scale the rectangle with the TILE_SIZE from settings
-                        '''
                         rects.append(pg.Rect(x * GameSettings.TILE_SIZE, y * GameSettings.TILE_SIZE, GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
         return rects
 

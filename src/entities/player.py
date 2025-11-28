@@ -90,7 +90,8 @@ class Player(Entity):
         tp = self.game_manager.current_map.check_teleport(self.position)
         if tp:
             dest = tp.destination
-            self.game_manager.switch_map(dest)
+            dest_pos = tp.target_pos
+            self.game_manager.switch_map(dest, dest_pos)
         super().update(dt)
 
     @override

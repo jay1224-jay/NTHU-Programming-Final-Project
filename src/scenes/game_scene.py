@@ -4,7 +4,7 @@ import time
 
 from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
-from src.utils import Logger, PositionCamera, GameSettings, Position
+from src.utils import Logger, PositionCamera, GameSettings, Position, TextDrawer
 from src.core.services import scene_manager, sound_manager
 from src.sprites import Sprite
 from typing import override
@@ -12,7 +12,6 @@ from src.data import bag
 from .setting_surface import GameSettingSurface
 
 from src.interface.components import Button
-from ..core.managers import game_manager
 
 
 class GameScene(Scene):
@@ -51,6 +50,7 @@ class GameScene(Scene):
         )
         data = self.game_manager.to_dict()
         self.setting_surface = GameSettingSurface(data["volume"])
+        self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
     def save_settings(self):
         """
@@ -59,7 +59,7 @@ class GameScene(Scene):
         data = self.game_manager.to_dict()
         data["volume"] = {"value": self.setting_surface.volume_slider.get_value(), "mute": self.setting_surface.mute_checkbox.get_value()}
         self.game_manager = self.game_manager.from_dict(data)
-
+        sound_manager.set_bgm_volume(self.setting_surface.volume_slider.get_value())
         self.game_manager.save("saves/game0.json")
         self.setting_surface.save_settings = False
 
@@ -148,5 +148,8 @@ class GameScene(Scene):
 
         self.game_manager.bag.draw(screen)
         self.setting_surface.draw(screen)
-
         self.backpack_button.draw(screen)
+
+        self.text_drawer.draw(screen,
+        f"Tile Pos: ({int(self.game_manager.player.position.x//GameSettings.TILE_SIZE)},{int(self.game_manager.player.position.y//GameSettings.TILE_SIZE)})",
+        20, (0, GameSettings.SCREEN_HEIGHT - 20), color=(255, 255, 255))

@@ -18,8 +18,6 @@ class SoundManager:
         self.previous_bgm = audio
 
     def set_bgm_volume(self, volume: float):
-        if self.current_bgm:
-            self.current_bgm.stop()
         audio = self.current_bgm
         audio.set_volume(volume)
         audio.play(-1)

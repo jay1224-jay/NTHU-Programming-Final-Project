@@ -6,20 +6,12 @@
         {
           "x": 24,
           "y": 23,
-          "destination": "gym.tmx",
-          "target_pos": {
-            "destination_x": 12,
-            "destination_y": 12
-          }
+          "destination": "gym.tmx"
         },
         {
           "x": 16,
           "y": 28,
-          "destination": "place.tmx",
-          "target_pos": {
-            "destination_x": 3,
-            "destination_y": 8
-          }
+          "destination": "place.tmx"
         }
       ],
       "player": {
@@ -70,29 +62,17 @@
         {
           "x": 11,
           "y": 14,
-          "destination": "map.tmx",
-          "target_pos": {
-            "destination_x": 24,
-            "destination_y": 24
-          }
+          "destination": "map.tmx"
         },
         {
           "x": 12,
           "y": 14,
-          "destination": "map.tmx",
-          "target_pos": {
-            "destination_x": 24,
-            "destination_y": 24
-          }
+          "destination": "map.tmx"
         },
         {
           "x": 13,
           "y": 14,
-          "destination": "map.tmx",
-          "target_pos": {
-            "destination_x": 24,
-            "destination_y": 24
-          }
+          "destination": "map.tmx"
         }
       ],
       "player": {
@@ -107,20 +87,14 @@
         {
           "x": 3,
           "y": 10,
-          "destination": "map.tmx",
-          "target_pos": {
-            "destination_x": 16,
-            "destination_y": 29
-          }
+          "destination": "map.tmx"
         },
         {
           "x": 4,
           "y": 10,
           "destination": "map.tmx",
-          "target_pos": {
-            "destination_x": 16,
-            "destination_y": 29
-          }
+          "destination_x": 16,
+          "destination_y": 29
         }
       ],
       "player": {
@@ -130,10 +104,10 @@
       "enemy_trainers": []
     }
   ],
-  "current_map": "place.tmx",
+  "current_map": "map.tmx",
   "player": {
-    "x": 3.0,
-    "y": 6.2
+    "x": 20.1,
+    "y": 29.9
   },
   "bag": {
     "monsters": [
@@ -199,7 +173,7 @@
     ]
   },
   "volume": {
-    "value": 49,
-    "mute": true
+    "value": 18,
+    "mute": false
   }
 }

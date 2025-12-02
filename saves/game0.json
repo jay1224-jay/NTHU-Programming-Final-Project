@@ -127,7 +127,15 @@
         "x": 3,
         "y": 8
       },
-      "enemy_trainers": []
+      "enemy_trainers": [
+        {
+          "x": 5.0,
+          "y": 7.0,
+          "classification": "stationary",
+          "facing": "UP",
+          "max_tiles": 2
+        }
+      ]
     }
   ],
   "current_map": "place.tmx",

@@ -21,7 +21,7 @@ class SettingScene(Scene):
 
         self.surface_width, self.surface_height = GameSettings.SCREEN_WIDTH//2, GameSettings.SCREEN_HEIGHT//2
         self.surface_x = GameSettings.SCREEN_WIDTH//2 - self.surface_width//2
-        self.surface_y = GameSettings.SCREEN_HEIGHT//2 - self.surface_height//2
+        self.surface_y = GameSettings.SCREEN_HEIGHT//2 - self.surface_height//2 + 100
         self.setting_surface = pg.Surface((self.surface_width, self.surface_height))
 
         self.data = GameManager.load("saves/game0.json").to_dict()["volume"]

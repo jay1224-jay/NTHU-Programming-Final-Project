@@ -11,6 +11,8 @@ Author: Jay Wang (王宥傑)
 1. Battle-Winning Strategy Search Using Recursion (limited searching depth)
 2. Chat System
 3. Teleportation Between Players
+> If time permits,<br>
+> train a powerful model based on random battle data
 
 ## About Checkpoint 3
 

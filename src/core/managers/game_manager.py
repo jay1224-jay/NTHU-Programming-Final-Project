@@ -6,12 +6,14 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+
 from src.utils import Logger, GameSettings, Position, Teleport
 
 if TYPE_CHECKING:
     from src.maps.map import Map
     from src.entities.player import Player
     from src.entities.enemy_trainer import EnemyTrainer
+    from src.entities.merchant import Merchant
     from src.data.bag import Bag
 
 
@@ -31,7 +33,8 @@ class GameManager:
     
     def __init__(self, maps: dict[str, Map], start_map: str, 
                  player: Player | None,
-                 enemy_trainers: dict[str, list[EnemyTrainer]], 
+                 enemy_trainers: dict[str, list[EnemyTrainer]],
+                 merchants: dict[str, list[EnemyTrainer]],
                  bag: Bag | None = None):
         from src.data.bag import Bag
         # Game Properties
@@ -39,6 +42,7 @@ class GameManager:
         self.current_map_key = start_map
         self.player = player
         self.enemy_trainers = enemy_trainers
+        self.merchants = merchants
 
         self.bag = bag if bag is not None else Bag([], [])
         # Check If you should change scene
@@ -55,6 +59,10 @@ class GameManager:
     @property
     def current_enemy_trainers(self) -> list[EnemyTrainer]:
         return self.enemy_trainers[self.current_map_key]
+
+    @property
+    def current_merchants(self) -> list[EnemyTrainer]:
+        return self.merchants[self.current_map_key]
         
     @property
     def current_teleporter(self) -> list[Teleport]:
@@ -80,6 +88,9 @@ class GameManager:
         if self.maps[self.current_map_key].check_collision(rect):
             return True
         for entity in self.enemy_trainers[self.current_map_key]:
+            if rect.colliderect(entity.animation.rect):
+                return True
+        for entity in self.merchants[self.current_map_key]:
             if rect.colliderect(entity.animation.rect):
                 return True
         return False
@@ -112,8 +123,8 @@ class GameManager:
         for key, m in self.maps.items():
             block = m.to_dict()
             block["enemy_trainers"] = [t.to_dict() for t in self.enemy_trainers.get(key, [])]
+            block["merchants"] = [t.to_dict() for t in self.merchants.get(key, [])]
             map_blocks.append(block)
-        # print(self.player.position)
         return {
             "map": map_blocks,
             "current_map": self.current_map_key,
@@ -127,6 +138,7 @@ class GameManager:
         from src.maps.map import Map
         from src.entities.player import Player
         from src.entities.enemy_trainer import EnemyTrainer
+        from src.entities.merchant import Merchant
         from src.data.bag import Bag
         
         Logger.info("Loading maps")
@@ -134,6 +146,7 @@ class GameManager:
         maps: dict[str, Map] = {}
         player_spawns: dict[str, Position] = {}
         trainers: dict[str, list[EnemyTrainer]] = {}
+        merchants: dict[str, list[Merchant]] = {}
 
         for entry in maps_data:
             # print("from dict")
@@ -150,6 +163,7 @@ class GameManager:
             maps, current_map,
             None, # Player
             trainers,
+            merchants,
             bag=None
         )
         gm.current_map_key = current_map
@@ -158,6 +172,9 @@ class GameManager:
         for m in data["map"]:
             raw_data = m["enemy_trainers"]
             gm.enemy_trainers[m["path"]] = [EnemyTrainer.from_dict(t, gm) for t in raw_data]
+            # print(m)
+            raw_data = m["merchants"]
+            gm.merchants[m["path"]] = [Merchant.from_dict(t, gm) for t in raw_data]
         
         Logger.info("Loading Player")
         if data.get("player"):

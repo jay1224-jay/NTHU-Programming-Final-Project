@@ -11,16 +11,16 @@ from src.core.services import input_manager, scene_manager
 from src.utils import GameSettings, Direction, Position, PositionCamera, Logger
 
 
-class EnemyTrainerClassification(Enum):
+class MerchantClassification(Enum):
     STATIONARY = "stationary"
 
 @dataclass
 class IdleMovement:
-    def update(self, enemy: "EnemyTrainer", dt: float) -> None:
+    def update(self, enemy: "Merchant", dt: float) -> None:
         return
 
-class EnemyTrainer(Entity):
-    classification: EnemyTrainerClassification
+class Merchant(Entity):
+    classification: MerchantClassification
     max_tiles: int | None
     _movement: IdleMovement
     warning_sign: Sprite
@@ -33,21 +33,22 @@ class EnemyTrainer(Entity):
         x: float,
         y: float,
         game_manager: GameManager,
-        classification: EnemyTrainerClassification = EnemyTrainerClassification.STATIONARY,
+        classification: MerchantClassification = MerchantClassification.STATIONARY,
         max_tiles: int | None = 2,
         facing: Direction | None = None,
     ) -> None:
-        super().__init__(x, y, game_manager, "character/ow4.png")
+        super().__init__(x, y, game_manager, "character/ow3.png")
         self.classification = classification
         self.max_tiles = max_tiles
-        if classification == EnemyTrainerClassification.STATIONARY:
+        if classification == MerchantClassification.STATIONARY:
             self._movement = IdleMovement()
             if facing is None:
-                raise ValueError("Idle EnemyTrainer requires a 'facing' Direction at instantiation")
+                raise ValueError("Idle Merchant requires a 'facing' Direction at instantiation")
             self._set_direction(facing)
         else:
             raise ValueError("Invalid classification")
-        self.warning_sign = Sprite("exclamation.png", (GameSettings.TILE_SIZE // 2, GameSettings.TILE_SIZE // 2))
+
+        self.warning_sign = Sprite("UI/button_shop.png", (GameSettings.TILE_SIZE // 2, GameSettings.TILE_SIZE // 2))
         self.warning_sign.update_pos(Position(x + GameSettings.TILE_SIZE // 4, y - GameSettings.TILE_SIZE // 2))
         self.detected = False
 
@@ -56,8 +57,8 @@ class EnemyTrainer(Entity):
         self._movement.update(self, dt)
         self._has_los_to_player()
         if self.detected and input_manager.key_pressed(pygame.K_SPACE):
-            Logger.debug("Start Battling")
-            scene_manager.change_scene("battle")
+            Logger.debug("Shop overlay")
+            self.
         self.animation.update_pos(self.position)
 
     @override
@@ -83,9 +84,6 @@ class EnemyTrainer(Entity):
         self.los_direction = self.direction
 
     def _get_los_rect(self) -> pygame.Rect | None:
-        '''
-        TODO: Create hitbox to detect line of sight of the enemies towards the player
-        '''
         dx = 1
         dy = 1
         start_x = self.position.x
@@ -120,8 +118,8 @@ class EnemyTrainer(Entity):
 
     @classmethod
     @override
-    def from_dict(cls, data: dict, game_manager: GameManager) -> "EnemyTrainer":
-        classification = EnemyTrainerClassification(data.get("classification", "stationary"))
+    def from_dict(cls, data: dict, game_manager: GameManager) -> "Merchant":
+        classification = MerchantClassification(data.get("classification", "stationary"))
         max_tiles = data.get("max_tiles")
         facing_val = data.get("facing")
         facing: Direction | None = None
@@ -130,7 +128,7 @@ class EnemyTrainer(Entity):
                 facing = Direction[facing_val]
             elif isinstance(facing_val, Direction):
                 facing = facing_val
-        if facing is None and classification == EnemyTrainerClassification.STATIONARY:
+        if facing is None and classification == MerchantClassification.STATIONARY:
             facing = Direction.DOWN
         return cls(
             data["x"] * GameSettings.TILE_SIZE,

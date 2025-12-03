@@ -12,7 +12,10 @@ class Sprite:
         if size is not None:
             self.image = pg.transform.scale(self.image, size)
         self.rect = self.image.get_rect()
-        
+
+    def change_image(self, img_path: str):
+        self.image = resource_manager.get_image(img_path)
+
     def update(self, dt: float):
         pass
 

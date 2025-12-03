@@ -12,10 +12,10 @@ class Entity:
     position: Position
     game_manager: GameManager
     
-    def __init__(self, x: float, y: float, game_manager: GameManager) -> None:
+    def __init__(self, x: float, y: float, game_manager: GameManager, img_path="character/ow1.png") -> None:
         # Sprite is only for debug, need to change into animations
         self.animation = Animation(
-            "character/ow1.png", ["down", "left", "right", "up"], 4,
+            img_path, ["down", "left", "right", "up"], 4,
             (GameSettings.TILE_SIZE, GameSettings.TILE_SIZE)
         )
         
@@ -23,6 +23,9 @@ class Entity:
         self.direction = Direction.DOWN
         self.animation.update_pos(self.position)
         self.game_manager = game_manager
+
+    def change_animation(self, path):
+        self.animation.image_path = path
 
     def update(self, dt: float) -> None:
         self.animation.update_pos(self.position)

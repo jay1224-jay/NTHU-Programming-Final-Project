@@ -90,10 +90,13 @@ class GameScene(Scene):
             self.game_manager.player.update(dt)
         for enemy in self.game_manager.current_enemy_trainers:
             enemy.update(dt)
+        for merchant in self.game_manager.current_merchants:
+            merchant.update(dt)
             
         # Update others
         self.game_manager.bag.update(dt)
         self.setting_surface.update(dt)
+        self.shop_surface.update(dt)
         self.setting_button.update(dt)
         self.backpack_button.update(dt)
         
@@ -129,6 +132,9 @@ class GameScene(Scene):
             self.game_manager.current_map.draw(screen, camera)
         for enemy in self.game_manager.current_enemy_trainers:
             enemy.draw(screen, camera)
+
+        for merchant in self.game_manager.current_merchants:
+            merchant.draw(screen, camera)
 
         if self.online_manager and self.game_manager.player:
             list_online = self.online_manager.get_list_players()

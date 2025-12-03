@@ -78,7 +78,6 @@ class Teleport:
     
     @classmethod
     def from_dict(cls, data: dict):
-        print(data)
         target = None
         if "target_pos" in data:
             target = Position(

@@ -26,6 +26,15 @@
         "x": 24,
         "y": 24
       },
+      "merchants": [
+        {
+          "x": 14.0,
+          "y": 29.0,
+          "classification": "stationary",
+          "facing": "DOWN",
+          "max_tiles": 2
+        }
+      ],
       "enemy_trainers": [
         {
           "x": 24.0,
@@ -99,6 +108,15 @@
         "x": 12,
         "y": 12
       },
+      "merchants": [
+        {
+          "x": 13.0,
+          "y": 29.0,
+          "classification": "stationary",
+          "facing": "RIGHT",
+          "max_tiles": 2
+        }
+      ],
       "enemy_trainers": []
     },
     {
@@ -127,6 +145,15 @@
         "x": 3,
         "y": 8
       },
+      "merchants": [
+        {
+          "x": 16.0,
+          "y": 30.0,
+          "classification": "stationary",
+          "facing": "DOWN",
+          "max_tiles": 2
+        }
+      ],
       "enemy_trainers": [
         {
           "x": 5.0,

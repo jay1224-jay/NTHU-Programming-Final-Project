@@ -6,7 +6,7 @@ from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
 from src.utils import Logger, PositionCamera, GameSettings, Position, TextDrawer
 from src.core.services import scene_manager, sound_manager
-from src.sprites import Sprite
+from src.sprites import Sprite, Animation
 from typing import override
 from src.data import bag
 from .setting_surface import GameSettingSurface
@@ -35,7 +35,10 @@ class GameScene(Scene):
             self.online_manager = OnlineManager()
         else:
             self.online_manager = None
-        self.sprite_online = Sprite("ingame_ui/options1.png", (GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
+        self.sprite_online = Animation(
+            "character/ow5.png", ["down", "left", "right", "up"], 4,
+            (GameSettings.TILE_SIZE, GameSettings.TILE_SIZE)
+        )
 
         self.bag_opened = False
         self.setting_button = Button(
@@ -114,6 +117,7 @@ class GameScene(Scene):
             _ = self.online_manager.update(
                 self.game_manager.player.position.x, 
                 self.game_manager.player.position.y,
+                self.game_manager.player.direction,
                 self.game_manager.current_map.path_name
             )
         if self.setting_surface.save_settings:
@@ -153,6 +157,7 @@ class GameScene(Scene):
                     cam = self.game_manager.player.camera
                     pos = cam.transform_position_as_position(Position(player["x"], player["y"]))
                     self.sprite_online.update_pos(pos)
+                    self.sprite_online.switch(player["dir"])
                     self.sprite_online.draw(screen)
 
         self.setting_button.draw(screen)

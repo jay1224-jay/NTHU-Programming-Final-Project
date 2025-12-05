@@ -20,15 +20,13 @@ class Entity:
         )
         
         self.position = Position(x, y)
-        self.direction = Direction.DOWN
+        self.direction = "down"
         self.animation.update_pos(self.position)
         self.game_manager = game_manager
 
-    def change_animation(self, path):
-        self.animation.image_path = path
-
     def update(self, dt: float) -> None:
         self.animation.update_pos(self.position)
+        self.animation.switch(self.direction)
         self.animation.update(dt)
         
     def draw(self, screen: pg.Surface, camera: PositionCamera) -> None:

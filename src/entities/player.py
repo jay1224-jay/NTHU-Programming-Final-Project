@@ -45,17 +45,19 @@ class Player(Entity):
 
         if input_manager.key_down(pg.K_LEFT) or input_manager.key_down(pg.K_a):
             dis.x -= d
-            self.animation.switch("left")
+            self.direction = "left"
         if input_manager.key_down(pg.K_RIGHT) or input_manager.key_down(pg.K_d):
             dis.x += d
-            self.animation.switch("right")
+            self.direction = "right"
 
         if input_manager.key_down(pg.K_UP) or input_manager.key_down(pg.K_w):
             dis.y -= d
-            self.animation.switch("up")
+            self.direction = "up"
+
         if input_manager.key_down(pg.K_DOWN) or input_manager.key_down(pg.K_s):
             dis.y += d
-            self.animation.switch("down")
+            self.direction = "down"
+        self.animation.switch(self.direction)
 
         if dis.x and dis.y:
             # Normalize distance

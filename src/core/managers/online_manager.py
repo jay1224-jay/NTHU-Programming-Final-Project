@@ -53,13 +53,12 @@ class OnlineManager:
             Logger.warning(f"OnlineManager registration error: {e}")
         return
 
-    def update(self, x: float, y: float, map_name: str) -> bool:
+    def update(self, x: float, y: float, dir: str, map_name: str) -> bool:
         if self.player_id == -1:
             # Try to register again
             return False
-        
         url = f"{self.base}/players"
-        body = {"id": self.player_id, "x": x, "y": y, "map": map_name}
+        body = {"id": self.player_id, "x": x, "y": y, "dir": dir, "map": map_name}
         try:
             resp = requests.post(url, json=body, timeout=5)
             if resp.status_code == 200:
@@ -100,7 +99,6 @@ class OnlineManager:
             resp = requests.get(url, timeout=5)
             resp.raise_for_status()
             all_players = resp.json().get("players", [])
-
             pid = self.player_id
             filtered = [p for key, p in all_players.items() if int(key) != pid]
             with self._lock:

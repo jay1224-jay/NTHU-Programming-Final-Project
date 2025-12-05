@@ -1,7 +1,7 @@
 import pygame as pg
 
 from .sprite import Sprite
-from src.utils import GameSettings, Logger, PositionCamera
+from src.utils import GameSettings, Logger, PositionCamera, Position
 from typing import Optional
 
 class Animation(Sprite):
@@ -48,6 +48,9 @@ class Animation(Sprite):
         if name not in self.animations:
             Logger.error(f"name {name} not in animations list!")
         self.cur_row = name
+
+    def update_pos(self, pos: Position):
+        self.rect.topleft = (int(pos.x), int(pos.y))
         
     def update(self, dt: float):
          self.accumulator = (self.accumulator + dt) % self.loop

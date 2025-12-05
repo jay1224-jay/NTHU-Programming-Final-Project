@@ -40,7 +40,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json(400, {"error": "invalid_json"})
             return
 
-        missing = [k for k in ("id", "x", "y", "map") if k not in data]
+        missing = [k for k in ("id", "x", "y", "dir", "map") if k not in data]
         if missing:
             self._json(400, {"error": "bad_fields", "missing": missing})
             return
@@ -49,12 +49,13 @@ class Handler(BaseHTTPRequestHandler):
             pid = int(data["id"])
             x = float(data["x"])
             y = float(data["y"])
+            dir = data["dir"]
             map_name = str(data["map"])
         except (ValueError, TypeError):
             self._json(400, {"error": "bad_fields"})
             return
 
-        ok = PLAYER_HANDLER.update(pid, x, y, map_name)
+        ok = PLAYER_HANDLER.update(pid, x, y, dir, map_name)
         if not ok:
             self._json(404, {"error": "player_not_found"})
             return

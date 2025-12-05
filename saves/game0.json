@@ -26,15 +26,6 @@
         "x": 24,
         "y": 24
       },
-      "merchants": [
-        {
-          "x": 14.0,
-          "y": 29.0,
-          "classification": "stationary",
-          "facing": "DOWN",
-          "max_tiles": 2
-        }
-      ],
       "enemy_trainers": [
         {
           "x": 24.0,
@@ -69,6 +60,15 @@
           "y": 31.0,
           "classification": "stationary",
           "facing": "UP",
+          "max_tiles": 2
+        }
+      ],
+      "merchants": [
+        {
+          "x": 14.0,
+          "y": 29.0,
+          "classification": "stationary",
+          "facing": "DOWN",
           "max_tiles": 2
         }
       ]
@@ -108,6 +108,7 @@
         "x": 12,
         "y": 12
       },
+      "enemy_trainers": [],
       "merchants": [
         {
           "x": 13.0,
@@ -116,8 +117,7 @@
           "facing": "RIGHT",
           "max_tiles": 2
         }
-      ],
-      "enemy_trainers": []
+      ]
     },
     {
       "path": "place.tmx",
@@ -145,21 +145,21 @@
         "x": 3,
         "y": 8
       },
-      "merchants": [
-        {
-          "x": 16.0,
-          "y": 30.0,
-          "classification": "stationary",
-          "facing": "DOWN",
-          "max_tiles": 2
-        }
-      ],
       "enemy_trainers": [
         {
           "x": 5.0,
           "y": 7.0,
           "classification": "stationary",
           "facing": "UP",
+          "max_tiles": 2
+        }
+      ],
+      "merchants": [
+        {
+          "x": 16.0,
+          "y": 30.0,
+          "classification": "stationary",
+          "facing": "DOWN",
           "max_tiles": 2
         }
       ]
@@ -187,32 +187,39 @@
         "sprite_path": "menu_sprites/menusprite2.png"
       },
       {
-        "name": "Charizard",
-        "hp": 194,
-        "max_hp": 194,
-        "level": 4,
-        "sprite_path": "menu_sprites/menusprite2.png"
+        "name": "Pickachu",
+        "hp": 193,
+        "max_hp": 193,
+        "level": 8,
+        "sprite_path": "menu_sprites/menusprite1.png"
       },
       {
-        "name": "Charizard",
-        "hp": 128,
-        "max_hp": 128,
+        "name": "Gengar",
+        "hp": 139,
+        "max_hp": 139,
         "level": 7,
-        "sprite_path": "menu_sprites/menusprite2.png"
+        "sprite_path": "menu_sprites/menusprite5.png"
       },
       {
-        "name": "Charizard",
-        "hp": 112,
-        "max_hp": 112,
-        "level": 17,
-        "sprite_path": "menu_sprites/menusprite2.png"
+        "name": "Pickachu",
+        "hp": 151,
+        "max_hp": 151,
+        "level": 9,
+        "sprite_path": "menu_sprites/menusprite1.png"
       },
       {
         "name": "Blastoise",
-        "hp": 117,
-        "max_hp": 117,
-        "level": 7,
+        "hp": 192,
+        "max_hp": 192,
+        "level": 4,
         "sprite_path": "menu_sprites/menusprite3.png"
+      },
+      {
+        "name": "Venusaur",
+        "hp": 102,
+        "max_hp": 102,
+        "level": 2,
+        "sprite_path": "menu_sprites/menusprite4.png"
       }
     ],
     "items": [
@@ -228,7 +235,7 @@
       },
       {
         "name": "Pokeball",
-        "count": 93,
+        "count": 87,
         "sprite_path": "ingame_ui/ball.png"
       }
     ]

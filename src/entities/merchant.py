@@ -58,7 +58,7 @@ class Merchant(Entity):
         self._has_los_to_player()
         if self.detected and input_manager.key_pressed(pygame.K_SPACE):
             Logger.debug("Shop overlay")
-            self.
+            scene_manager.open_shop()
         self.animation.update_pos(self.position)
 
     @override

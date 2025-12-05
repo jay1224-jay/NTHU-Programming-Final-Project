@@ -7,7 +7,7 @@ import time
 from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
 from src.utils import Logger, PositionCamera, GameSettings, Position, TextDrawer
-from src.core.services import scene_manager, sound_manager
+from src.core.services import scene_manager, sound_manager, input_manager
 from src.sprites import Sprite
 from typing import override
 
@@ -31,6 +31,8 @@ class Bag:
         )
         self.not_updating_bag = True
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
+        self.start_y = self.close_button.hitbox.y - 30
+        self.mouse_speed = 0
 
     def close_bag(self):
         self.not_updating_bag = True
@@ -38,6 +40,33 @@ class Bag:
 
     def update(self, dt: float):
         self.close_button.update(dt)
+        n = len(self._monsters_data)
+        if 90 <= (input_manager.mouse_pos[0] - self.surface_x) <= 90 + 170:
+            self.mouse_speed = input_manager.mouse_wheel
+        if n > 5:
+            # allow scroll
+            # print(input_manager.mouse_wheel)
+            # self.start_y += (dt* * 400)
+            self.start_y += (dt * self.mouse_speed * 400)
+
+            """
+            end_y = self.start_y + (n-1) * (50 + 5) + 40 + 50
+            if self.surface_height <= end_y:
+                self.start_y = self.surface_height - ((n-1) * (50 + 5) + 40 + 50) - 2
+
+            if self.start_y < -35:
+                self.start_y = -34
+            """
+
+        """        # slow down
+        print(self.mouse_speed)
+        if abs(self.mouse_speed) < 0.01:
+            self.mouse_speed = 0
+        elif self.mouse_speed > 0:
+            self.mouse_speed -= 0.01
+        elif self.mouse_speed < 0:
+            print("in")
+            self.mouse_speed += 0.01"""
 
     def draw(self, screen: pg.Surface):
         if scene_manager.bag_opened:
@@ -64,7 +93,9 @@ class Bag:
             # Draw monster, name, hp, max_hp, level
             i = 0
             start_x = 90
-            start_y = self.close_button.hitbox.y - 30
+            # start_y = self.close_button.hitbox.y - 30
+
+            start_y = self.start_y
             sprite_size = 50
             background_rect_width = 70
             background_rect_height = 10

@@ -10,6 +10,7 @@ from src.sprites import Sprite
 from typing import override
 from src.data import bag
 from .setting_surface import GameSettingSurface
+from .shop_surface import GameShopSurface
 
 from src.interface.components import Button
 
@@ -50,6 +51,7 @@ class GameScene(Scene):
         )
         data = self.game_manager.to_dict()
         self.setting_surface = GameSettingSurface(data["volume"])
+        self.shop_surface = GameShopSurface()
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
     def save_settings(self):
@@ -146,7 +148,7 @@ class GameScene(Scene):
                     self.sprite_online.draw(screen)
 
         self.setting_button.draw(screen)
-        if scene_manager.bag_opened or scene_manager.setting_opened:
+        if scene_manager.bag_opened or scene_manager.setting_opened or scene_manager.shop_opened:
             dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
             dark_overlay.fill((0, 0, 0, 128))
             screen.blit(dark_overlay, (0, 0))
@@ -154,6 +156,7 @@ class GameScene(Scene):
 
         self.game_manager.bag.draw(screen)
         self.setting_surface.draw(screen)
+        self.shop_surface.draw(screen)
         self.backpack_button.draw(screen)
 
         self.text_drawer.draw(screen,

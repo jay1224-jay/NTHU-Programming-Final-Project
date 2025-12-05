@@ -6,6 +6,8 @@ import pygame as pg
 import threading
 import time
 
+from enum import Enum
+
 from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
 from src.utils import Logger, PositionCamera, GameSettings, Position
@@ -13,50 +15,63 @@ from src.core.services import scene_manager, sound_manager
 from src.sprites import Sprite
 from typing import override
 
-class GameSettingSurface:
-    def __init__(self, volume_data: dict):
+BUY = 1
+SELL = 2
 
+_d = {
+    "monsters": [
+        {
+            "name": "Pickachu",
+            "hp": 20,
+            "max_hp": 20,
+            "level": 1,
+            "sprite_path": "menu_sprites/menusprite1.png"
+        }
+    ],
+    "items": [
+        {
+            "name": "Potion",
+            "count": 5,
+            "sprite_path": "ingame_ui/potion.png"
+        },
+        {
+            "name": "Pokeball",
+            "count": 87,
+            "sprite_path": "ingame_ui/ball.png"
+        }
+    ]
+}
 
-
-        self.surface_width, self.surface_height = GameSettings.SCREEN_WIDTH//2, GameSettings.SCREEN_HEIGHT//2
+class GameShopSurface:
+    def __init__(self):
+        self.surface_width, self.surface_height = 400, 500
         self.surface_x = GameSettings.SCREEN_WIDTH//2 - self.surface_width//2
         self.surface_y = GameSettings.SCREEN_HEIGHT//2 - self.surface_height//2
-        self.setting_surface = pg.Surface((self.surface_width, self.surface_height))
+        self.shop_surface = pg.Surface((self.surface_width, self.surface_height))
 
-        self.save_button = Button(
-            "UI/button_save.png", "UI/button_save_hover.png",
-            20, self.surface_height - 50 - 20, 50, 50,
-            lambda: self.save(), self.surface_x, self.surface_y
-        )
-        self.load_button = Button(
-            "UI/button_load.png", "UI/button_load_hover.png",
-            20 + 10 + 50, self.surface_height - 50 - 20, 50, 50,
-            lambda: self.load(), self.surface_x, self.surface_y
-        )
-        self.back_button = Button(
-            "UI/button_back.png", "UI/button_back_hover.png",
-            20 + 10 + 50 + 10 + 50, self.surface_height - 50 - 20, 50, 50,
-            lambda: scene_manager.close_setting(), self.surface_x, self.surface_y
-        )
         self.close_button = Button(
             "UI/button_x.png", "UI/button_x_hover.png",
             self.surface_width - 20 - 30, 20, 40, 40,
-            lambda: scene_manager.close_setting(), self.surface_x, self.surface_y
+            lambda: scene_manager.close_shop(), self.surface_x, self.surface_y
         )
-
-        self.volume_slider = Slider(
-            35, self.surface_height//2 - 20, self.surface_width - 70, 20, volume_data.get("value"), self.surface_x, self.surface_y
+        self.buy_button = Button(
+            "UI/raw/UI_Flat_Button02a_4.png", "UI/raw/UI_Flat_Button02a_2.png",
+            10, 20,  70, 40,
+            lambda: print(), self.surface_x, self.surface_y, label="BUY"
+        )
+        self.sell_button = Button(
+            "UI/raw/UI_Flat_Button02a_4.png", "UI/raw/UI_Flat_Button02a_2.png",
+            90, 20, 70, 40,
+            lambda: print(), self.surface_x, self.surface_y, label="SELL"
         )
         self.game_font = pg.font.Font(GameSettings.GAME_FONT, 24)
-
-        self.mute_checkbox = Checkbox(
-            155, self.surface_height//2 + 20 + 30 - 5, 35, 25, volume_data.get("mute"),
-            lambda: self.mute(), self.surface_x, self.surface_y
-        )
 
         self.save_settings = False
         self.load_settings = False
 
+        self._status = BUY
+
+        self._shop_data = _d.copy()
 
     def save(self):
         self.save_settings = True
@@ -66,35 +81,28 @@ class GameSettingSurface:
         self.load_settings = True
         scene_manager.close_setting()
 
-    def mute(self):
-        if self.mute_checkbox.get_value():
-            Logger.debug(f"Mute checkbox muted")
-            sound_manager.set_bgm_volume(0)
 
     def update(self, dt: float):
         self.close_button.update(dt)
-        self.save_button.update(dt)
-        self.load_button.update(dt)
-        self.back_button.update(dt)
-        self.volume_slider.update(dt)
-        self.mute_checkbox.update(dt)
+        self.buy_button.update(dt)
+        self.sell_button.update(dt)
 
     def draw(self, screen: pg.Surface):
-        if scene_manager.setting_opened:
-            self.setting_surface.fill("ORANGE")
-            self.back_button.draw(self.setting_surface)
-            self.load_button.draw(self.setting_surface)
-            self.save_button.draw(self.setting_surface)
-            self.close_button.draw(self.setting_surface)
-            self.volume_slider.draw(self.setting_surface)
-            self.mute_checkbox.draw(self.setting_surface)
+        if scene_manager.shop_opened:
+            self.shop_surface.fill("ORANGE")
+            self.close_button.draw(self.shop_surface)
+            self.buy_button.draw(self.shop_surface)
+            self.sell_button.draw(self.shop_surface)
 
-            volume_text_surface = self.game_font.render(f"VOLUME: {self.volume_slider.get_value()}%", True, (255, 255, 255))
-            self.setting_surface.blit(volume_text_surface, (20, self.surface_height//2 - 50))
+            start_x = 0
+            if self._status == BUY:
+                # only 
+                pass
+            elif self._status == SELL:
+                # only monsters
+                pass
+            else:
+                Logger.debug("Unknown shop status")
 
-            mute_text_surface = self.game_font.render("MUTE: " + ("ON" if self.mute_checkbox.get_value() else "OFF"), True,
-                                                             (255, 255, 255))
-            self.setting_surface.blit(mute_text_surface, (20, self.surface_height//2 + 20 + 30))
-
-            screen.blit(self.setting_surface, (self.surface_x, self.surface_y))
+            screen.blit(self.shop_surface, (self.surface_x, self.surface_y))
 

@@ -14,8 +14,8 @@ class SceneManager:
         self._scenes = {}
         self.bag_opened = False
         self.setting_opened = False
+        self.shop_opened = False
         self._scene_transition_done = False
-
         self.alpha = 0
 
     def close_bag(self):
@@ -25,9 +25,13 @@ class SceneManager:
 
     def open_setting(self):
         self.setting_opened = True
-
     def close_setting(self):
         self.setting_opened = False
+
+    def open_shop(self):
+        self.shop_opened = True
+    def close_shop(self):
+        self.shop_opened = False
         
     def register_scene(self, name: str, scene: Scene) -> None:
         self._scenes[name] = scene

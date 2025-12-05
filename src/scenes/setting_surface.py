@@ -54,9 +54,6 @@ class GameSettingSurface:
         self.save_settings = False
         self.load_settings = False
 
-
-
-
     def save(self):
         self.save_settings = True
         scene_manager.close_setting()
@@ -69,6 +66,8 @@ class GameSettingSurface:
         if self.mute_checkbox.get_value():
             Logger.debug(f"Mute checkbox muted")
             sound_manager.set_bgm_volume(0)
+        else:
+            sound_manager.set_bgm_volume(self.volume_slider.get_value())
 
     def update(self, dt: float):
         self.close_button.update(dt)

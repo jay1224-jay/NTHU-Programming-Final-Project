@@ -6,6 +6,7 @@ from src.scenes.scene import Scene
 from src.interface.components import Button
 from src.core.services import scene_manager, sound_manager, input_manager
 from typing import override
+import json
 
 class MenuScene(Scene):
     # Background Image
@@ -34,7 +35,16 @@ class MenuScene(Scene):
     @override
     def enter(self) -> None:
         sound_manager.play_bgm("RBY 101 Opening (Part 1).ogg")
-        pass
+        val = None
+        mute = None
+        with open('saves/game0.json') as f:
+            d = json.load(f)
+            val = d["volume"]["value"]
+            mute = d["volume"]["mute"]
+        if mute:
+            sound_manager.set_bgm_volume(0)
+        else:
+            sound_manager.set_bgm_volume(val)
 
     @override
     def exit(self) -> None:

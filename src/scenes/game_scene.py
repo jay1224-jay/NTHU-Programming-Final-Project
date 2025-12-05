@@ -49,9 +49,8 @@ class GameScene(Scene):
             GameSettings.SCREEN_WIDTH - 75 - 50 - 10, 50, 50, 50,
             lambda: scene_manager.open_bag()
         )
-        data = self.game_manager.to_dict()
-        self.setting_surface = GameSettingSurface(data["volume"])
-        self.shop_surface = GameShopSurface()
+        self.setting_surface = None
+        self.shop_surface = None
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
     def save_settings(self):
@@ -67,7 +66,6 @@ class GameScene(Scene):
 
     def load_settings(self):
         self.game_manager = self.game_manager.load("saves/game0.json")
-
         self.setting_surface.load_settings = False
 
     @override
@@ -75,7 +73,17 @@ class GameScene(Scene):
         sound_manager.play_bgm("RBY 103 Pallet Town.ogg")
         if self.online_manager:
             self.online_manager.enter()
-        
+
+        data = GameManager.load(
+            "saves/game0.json").to_dict()
+        self.setting_surface = GameSettingSurface(data["volume"])
+        self.shop_surface = GameShopSurface()
+        val = data["volume"]["value"]
+        mute = data["volume"]["mute"]
+        if mute:
+            sound_manager.set_bgm_volume(0)
+        else:
+            sound_manager.set_bgm_volume(val)
     @override
     def exit(self) -> None:
         if self.online_manager:

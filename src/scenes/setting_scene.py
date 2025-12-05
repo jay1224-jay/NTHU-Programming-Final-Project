@@ -49,24 +49,40 @@ class SettingScene(Scene):
 
     @override
     def enter(self) -> None:
-        sound_manager.play_bgm("RBY 101 Opening (Part 1).ogg")
+        # sound_manager.play_bgm("RBY 101 Opening (Part 1).ogg")
         self.data = GameManager.load("saves/game0.json").to_dict()["volume"]
-
+        sound_manager.set_bgm_volume(self.data["value"])
+        if self.mute_checkbox.get_value():
+            print("mute")
+            sound_manager.set_bgm_volume(0)
+        else:
+            sound_manager.set_bgm_volume(self.volume_slider.get_value())
     @override
     def exit(self) -> None:
-        pass
+        data = GameManager.load("saves/game0.json")
+        data = data.to_dict()
+        data["volume"] = {"value": self.volume_slider.get_value(),
+                          "mute": self.mute_checkbox.get_value()}
+        game_manager = GameManager.from_dict(data)
+        game_manager.save("saves/game0.json")
 
     def mute(self):
-        if self.mute_checkbox.get_value() or False:
+        if self.mute_checkbox.get_value() :
             Logger.debug(f"Mute checkbox muted")
             sound_manager.set_bgm_volume(0)
+        else:
+            sound_manager.set_bgm_volume(self.volume_slider.get_value())
 
     def update(self, dt: float):
         self.close_button.update(dt)
         self.back_button.update(dt)
         self.volume_slider.update(dt)
         self.mute_checkbox.update(dt)
-        sound_manager.set_bgm_volume(self.volume_slider.get_value())
+
+        if self.mute_checkbox.get_value():
+            sound_manager.set_bgm_volume(0)
+        else:
+            sound_manager.set_bgm_volume(self.volume_slider.get_value())
 
     def draw(self, screen: pg.Surface):
 

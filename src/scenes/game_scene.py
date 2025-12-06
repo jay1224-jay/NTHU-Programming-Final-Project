@@ -39,6 +39,7 @@ class GameScene(Scene):
             "character/ow5.png", ["down", "left", "right", "up"], 4,
             (GameSettings.TILE_SIZE, GameSettings.TILE_SIZE)
         )
+        self.online_player_pre_position = []
 
         self.bag_opened = False
         self.setting_button = Button(
@@ -118,7 +119,8 @@ class GameScene(Scene):
                 self.game_manager.player.position.x, 
                 self.game_manager.player.position.y,
                 self.game_manager.player.direction,
-                self.game_manager.current_map.path_name
+                self.game_manager.current_map.path_name,
+                dt
             )
         if self.setting_surface.save_settings:
             self.save_settings()
@@ -152,13 +154,32 @@ class GameScene(Scene):
 
         if self.online_manager and self.game_manager.player:
             list_online = self.online_manager.get_list_players()
-            for player in list_online:
+            if len(self.online_player_pre_position) != len(list_online):
+                self.online_player_pre_position = list_online
+            # print(self.online_player_pre_position)
+            for i in range(len(list_online)):
+                player = list_online[i]
                 if player["map"] == self.game_manager.current_map.path_name:
+
+                    if self.online_player_pre_position[i] == (player["x"], player["y"]):
+                        self.sprite_online.stationary = True
+                        self.sprite_online.stationary_time += player["dt"]
+                    else:
+                        self.sprite_online.stationary_time = 0
+                        self.sprite_online.stationary = False
                     cam = self.game_manager.player.camera
                     pos = cam.transform_position_as_position(Position(player["x"], player["y"]))
                     self.sprite_online.update_pos(pos)
                     self.sprite_online.switch(player["dir"])
-                    self.sprite_online.draw(screen)
+                    if player["inactive"]:
+                        self.text_drawer.draw(screen, "AFK", 14, [pos.x+15, pos.y-15])
+                    self.sprite_online.draw(screen, None, player["inactive"])
+                    self.sprite_online.update(player["dt"])
+
+            self.online_player_pre_position = [(player["x"], player["y"]) for player in list_online]
+            # print(self.online_player_pre_position)
+
+
 
         self.setting_button.draw(screen)
         if scene_manager.bag_opened or scene_manager.setting_opened or scene_manager.shop_opened:

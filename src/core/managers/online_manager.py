@@ -53,13 +53,14 @@ class OnlineManager:
             Logger.warning(f"OnlineManager registration error: {e}")
         return
 
-    def update(self, x: float, y: float, dir: str, map_name: str) -> bool:
+    def update(self, x: float, y: float, dir: str, map_name: str, dt: float) -> bool:
         if self.player_id == -1:
             # Try to register again
             return False
         url = f"{self.base}/players"
-        body = {"id": self.player_id, "x": x, "y": y, "dir": dir, "map": map_name}
+        body = {"id": self.player_id, "x": x, "y": y, "dir": dir, "map": map_name, "dt": dt}
         try:
+            # print(body)
             resp = requests.post(url, json=body, timeout=5)
             if resp.status_code == 200:
                 return True

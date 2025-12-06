@@ -50,12 +50,13 @@ class Handler(BaseHTTPRequestHandler):
             x = float(data["x"])
             y = float(data["y"])
             dir = data["dir"]
+            dt = float(data["dt"])
             map_name = str(data["map"])
         except (ValueError, TypeError):
             self._json(400, {"error": "bad_fields"})
             return
 
-        ok = PLAYER_HANDLER.update(pid, x, y, dir, map_name)
+        ok = PLAYER_HANDLER.update(pid, x, y, dir, map_name, dt)
         if not ok:
             self._json(404, {"error": "player_not_found"})
             return

@@ -24,10 +24,20 @@ class Entity:
         self.animation.update_pos(self.position)
         self.game_manager = game_manager
 
+        self.pre_position = self.position
+        self.in_active_time = 0
+
     def update(self, dt: float) -> None:
         self.animation.update_pos(self.position)
         self.animation.switch(self.direction)
-        self.animation.update(dt)
+        if self.pre_position != self.position:
+            self.animation.update(dt)
+            self.in_active_time = 0
+        else:
+            self.in_active_time += dt
+            if self.in_active_time > 0.5:
+                self.animation.accumulator = 0
+        self.pre_position = self.position
         
     def draw(self, screen: pg.Surface, camera: PositionCamera) -> None:
         self.animation.draw(screen, camera)

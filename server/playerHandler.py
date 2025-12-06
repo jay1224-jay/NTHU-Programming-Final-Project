@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 TIMEOUT_TIME = 60.0
+AFK_TIME = 10
 CHECK_INTERVAL_TIME = 10.0
 
 @dataclass
@@ -14,19 +15,21 @@ class Player:
     y: float
     dir: str
     map: str
+    dt: float
     last_update: float
 
-    def update(self, x: float, y: float, dir: str, map: str) -> None:
+    def update(self, x: float, y: float, dir: str, map: str, dt:float) -> None:
         if x != self.x or y != self.y or map != self.map:
             self.last_update = time.monotonic()
         self.x = x
         self.y = y
         self.dir = dir
         self.map = map
+        self.dt = dt # Animation
 
     def is_inactive(self) -> bool:
         now = time.monotonic()
-        return (now - self.last_update) >= TIMEOUT_TIME
+        return (now - self.last_update) >= AFK_TIME
 
 
 class PlayerHandler:
@@ -74,16 +77,16 @@ class PlayerHandler:
         with self._lock:
             pid = self._next_id
             self._next_id += 1
-            self.players[pid] = Player(pid, 0.0, 0.0, "", "", time.monotonic())
+            self.players[pid] = Player(pid, 0.0, 0.0, "", "", time.monotonic(), 0.0)
             return pid
 
-    def update(self, pid: int, x: float, y: float, dir: str, map_name: str) -> bool:
+    def update(self, pid: int, x: float, y: float, dir: str, map_name: str, dt: float) -> bool:
         with self._lock:
             p = self.players.get(pid)
             if not p:
                 return False
             else:
-                p.update(float(x), float(y), dir, str(map_name))
+                p.update(float(x), float(y), dir, str(map_name), dt)
                 return True
 
     def list_players(self) -> dict:
@@ -95,6 +98,8 @@ class PlayerHandler:
                     "x": p.x,
                     "y": p.y,
                     "dir": p.dir,
-                    "map": p.map
+                    "map": p.map,
+                    "dt": p.dt,
+                    "inactive": p.is_inactive()
                 }
             return player_list

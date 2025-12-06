@@ -1,4 +1,5 @@
 import pygame as pg
+import pygame.transform
 
 from .sprite import Sprite
 from src.utils import GameSettings, Logger, PositionCamera, Position
@@ -43,6 +44,8 @@ class Animation(Sprite):
         self.loop = loop
         self.n_keyframes = n_keyframes
         self.rect = pg.Rect(0, 0, GameSettings.TILE_SIZE, GameSettings.TILE_SIZE)
+        self.stationary = False
+        self.stationary_time = 0
             
     def switch(self, name: str):
         if name not in self.animations:
@@ -53,13 +56,22 @@ class Animation(Sprite):
         self.rect.topleft = (int(pos.x), int(pos.y))
         
     def update(self, dt: float):
-         self.accumulator = (self.accumulator + dt) % self.loop
+        if self.stationary and self.stationary_time > 0.5:
+            self.accumulator = 0
+        else:
+            self.accumulator = (self.accumulator + dt) % self.loop
         
-    def draw(self, screen: pg.Surface, camera: Optional[PositionCamera] = None):
+    def draw(self, screen: pg.Surface, camera: Optional[PositionCamera] = None, inactive: bool = False):
         frames = self.animations[self.cur_row]
         idx = int((self.accumulator / self.loop) * self.n_keyframes)
         if camera:
-            screen.blit(frames[idx], camera.transform_rect(self.rect))
+            if inactive:
+                screen.blit(pygame.transform.grayscale(frames[idx]), camera.transform_rect(self.rect))
+            else:
+                screen.blit(frames[idx], camera.transform_rect(self.rect))
         else:
-            screen.blit(frames[idx], self.rect)
+            if inactive:
+                screen.blit(pygame.transform.grayscale(frames[idx]), self.rect)
+            else:
+                screen.blit(frames[idx], self.rect)
     

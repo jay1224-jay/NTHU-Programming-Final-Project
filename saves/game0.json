@@ -185,55 +185,6 @@
         "max_hp": 186,
         "level": 9,
         "sprite_path": "menu_sprites/menusprite2.png"
-      },
-      {
-        "name": "Pickachu",
-        "hp": 193,
-        "max_hp": 193,
-        "level": 8,
-        "sprite_path": "menu_sprites/menusprite1.png"
-      },
-      {
-        "name": "Gengar",
-        "hp": 139,
-        "max_hp": 139,
-        "level": 7,
-        "sprite_path": "menu_sprites/menusprite5.png"
-      },
-      {
-        "name": "Pickachu",
-        "hp": 151,
-        "max_hp": 151,
-        "level": 9,
-        "sprite_path": "menu_sprites/menusprite1.png"
-      },
-      {
-        "name": "Blastoise",
-        "hp": 192,
-        "max_hp": 192,
-        "level": 4,
-        "sprite_path": "menu_sprites/menusprite3.png"
-      },
-      {
-        "name": "Venusaur",
-        "hp": 102,
-        "max_hp": 102,
-        "level": 2,
-        "sprite_path": "menu_sprites/menusprite4.png"
-      },
-      {
-        "name": "Blastoise",
-        "hp": 192,
-        "max_hp": 192,
-        "level": 4,
-        "sprite_path": "menu_sprites/menusprite3.png"
-      },
-      {
-        "name": "Blastoise",
-        "hp": 192,
-        "max_hp": 192,
-        "level": 4,
-        "sprite_path": "menu_sprites/menusprite3.png"
       }
     ],
     "items": [
@@ -244,12 +195,12 @@
       },
       {
         "name": "Coins",
-        "count": 1253,
+        "count": 250,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
         "name": "Pokeball",
-        "count": 90,
+        "count": 91,
         "sprite_path": "ingame_ui/ball.png"
       }
     ]

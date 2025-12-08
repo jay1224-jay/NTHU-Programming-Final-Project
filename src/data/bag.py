@@ -44,9 +44,6 @@ class Bag:
         if 90 <= (input_manager.mouse_pos[0] - self.surface_x) <= 90 + 170:
             self.mouse_speed = input_manager.mouse_wheel
         if n > 5:
-            # allow scroll
-            # print(input_manager.mouse_wheel)
-            # self.start_y += (dt* * 400)
             self.start_y += (dt * self.mouse_speed * 400)
 
             """

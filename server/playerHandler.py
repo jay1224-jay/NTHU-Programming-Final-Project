@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 TIMEOUT_TIME = 60.0
 AFK_TIME = 10
-CHECK_INTERVAL_TIME = 10.0
+CHECK_INTERVAL_TIME = 20
 
 @dataclass
 class Player:

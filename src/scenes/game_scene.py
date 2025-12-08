@@ -81,7 +81,7 @@ class GameScene(Scene):
         data = GameManager.load(
             "saves/game0.json").to_dict()
         self.setting_surface = GameSettingSurface(data["volume"])
-        self.shop_surface = GameShopSurface()
+        self.shop_surface = GameShopSurface(self.text_drawer)
         val = data["volume"]["value"]
         mute = data["volume"]["mute"]
         if mute:

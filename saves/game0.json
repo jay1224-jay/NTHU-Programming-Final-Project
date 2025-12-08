@@ -165,10 +165,10 @@
       ]
     }
   ],
-  "current_map": "place.tmx",
+  "current_map": "map.tmx",
   "player": {
-    "x": 3.0,
-    "y": 6.2
+    "x": 14.0,
+    "y": 31.0
   },
   "bag": {
     "monsters": [
@@ -220,22 +220,36 @@
         "max_hp": 102,
         "level": 2,
         "sprite_path": "menu_sprites/menusprite4.png"
+      },
+      {
+        "name": "Blastoise",
+        "hp": 192,
+        "max_hp": 192,
+        "level": 4,
+        "sprite_path": "menu_sprites/menusprite3.png"
+      },
+      {
+        "name": "Blastoise",
+        "hp": 192,
+        "max_hp": 192,
+        "level": 4,
+        "sprite_path": "menu_sprites/menusprite3.png"
       }
     ],
     "items": [
       {
         "name": "Potion",
-        "count": 5,
+        "count": 6,
         "sprite_path": "ingame_ui/potion.png"
       },
       {
         "name": "Coins",
-        "count": 3,
+        "count": 1253,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
         "name": "Pokeball",
-        "count": 87,
+        "count": 90,
         "sprite_path": "ingame_ui/ball.png"
       }
     ]

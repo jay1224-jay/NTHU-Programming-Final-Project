@@ -165,42 +165,35 @@
       ]
     }
   ],
-  "current_map": "map.tmx",
+  "current_map": "place.tmx",
   "player": {
-    "x": 14.0,
-    "y": 31.0
+    "x": 3.0,
+    "y": 6.6
   },
   "bag": {
     "monsters": [
       {
         "name": "Pickachu",
-        "hp": 135,
+        "hp": 126,
         "max_hp": 139,
         "level": 130,
         "sprite_path": "menu_sprites/menusprite1.png"
-      },
-      {
-        "name": "Charizard",
-        "hp": 186,
-        "max_hp": 186,
-        "level": 9,
-        "sprite_path": "menu_sprites/menusprite2.png"
       }
     ],
     "items": [
       {
         "name": "Potion",
-        "count": 6,
+        "count": 8,
         "sprite_path": "ingame_ui/potion.png"
       },
       {
         "name": "Coins",
-        "count": 250,
+        "count": 54,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
         "name": "Pokeball",
-        "count": 91,
+        "count": 88,
         "sprite_path": "ingame_ui/ball.png"
       }
     ]

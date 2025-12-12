@@ -137,6 +137,7 @@ class GameShopSurface:
         player_coins = player_bag["items"][coin_ind]["count"]
         player_coins += sold_price
         del player_bag["monsters"][item_index]
+        player_bag["items"][coin_ind]["count"] = player_coins
         data["bag"] = player_bag
         gm = GameManager.from_dict(data)
         gm.save("saves/game0.json")

@@ -25,6 +25,8 @@ class Map:
 
         pixel_w = self.tmxdata.width * GameSettings.TILE_SIZE
         pixel_h = self.tmxdata.height * GameSettings.TILE_SIZE
+        self.pixel_w = pixel_w
+        self.pixel_h = pixel_h
 
         # Prebake the map
         self._surface = pg.Surface((pixel_w, pixel_h), pg.SRCALPHA)

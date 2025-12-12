@@ -5,7 +5,7 @@ import time
 from src.scenes.scene import Scene
 from src.core import GameManager, OnlineManager
 from src.utils import Logger, PositionCamera, GameSettings, Position, TextDrawer
-from src.core.services import scene_manager, sound_manager
+from src.core.services import scene_manager, sound_manager, input_manager
 from src.sprites import Sprite, Animation
 from typing import override
 from src.data import bag
@@ -13,6 +13,8 @@ from .setting_surface import GameSettingSurface
 from .shop_surface import GameShopSurface
 
 from src.interface.components import Button
+from src.utils import load_tmx
+from .minimap import MiniMap
 
 
 class GameScene(Scene):
@@ -57,6 +59,37 @@ class GameScene(Scene):
         self.shop_surface = None
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
+        self.minimap = None
+        self.last_map_name = ""
+
+    def create_minimap(self):
+        try:
+            tmx_path = f"{self.game_manager.current_map.path_name}"
+
+            tmx_data = load_tmx(tmx_path)
+
+            # Calculate total map dimensions
+            width = tmx_data.width * tmx_data.tilewidth
+            height = tmx_data.height * tmx_data.tileheight
+            # print(width)
+
+            full_map_surface = pg.Surface((width, height))
+
+            for layer in tmx_data.visible_layers:
+                if hasattr(layer, 'data'):
+                    for x, y, gid in layer:
+                        tile = tmx_data.get_tile_image_by_gid(gid)
+                        if tile:
+                            full_map_surface.blit(tile, (x * tmx_data.tilewidth, y * tmx_data.tileheight))
+
+            self.minimap = MiniMap(full_map_surface, max_width=200, position=(10, 30), border_color='black')
+
+            print(f"[GameScene] Minimap created for {tmx_path}")
+
+        except Exception as e:
+            print(f"[GameScene] Failed to create minimap: {e}")
+            self.minimap = None
+
     def save_settings(self):
         """
         : Save Volume Settings
@@ -88,6 +121,9 @@ class GameScene(Scene):
             sound_manager.set_bgm_volume(0)
         else:
             sound_manager.set_bgm_volume(val)
+
+        self.create_minimap()
+        self.last_map_name = self.game_manager.current_map.path_name
     @override
     def exit(self) -> None:
         if self.online_manager:
@@ -98,7 +134,10 @@ class GameScene(Scene):
         # Check if there is assigned next scene
         self.game_manager.try_switch_map()
         # print(self.game_manager.player.position)
-        
+        current_map_name = self.game_manager.current_map.path_name
+        if self.last_map_name != current_map_name:
+            self.create_minimap()
+            self.last_map_name = current_map_name
         # Update player and other data
         if self.game_manager.player:
             self.game_manager.player.update(dt)
@@ -113,10 +152,11 @@ class GameScene(Scene):
         self.shop_surface.update(dt)
         self.setting_button.update(dt)
         self.backpack_button.update(dt)
-        
+
+
         if self.game_manager.player is not None and self.online_manager is not None:
             _ = self.online_manager.update(
-                self.game_manager.player.position.x, 
+                self.game_manager.player.position.x,
                 self.game_manager.player.position.y,
                 self.game_manager.player.direction,
                 self.game_manager.current_map.path_name,
@@ -196,3 +236,11 @@ class GameScene(Scene):
         self.text_drawer.draw(screen,
         f"Tile Pos: ({int(self.game_manager.player.position.x//GameSettings.TILE_SIZE)},{int(self.game_manager.player.position.y//GameSettings.TILE_SIZE)})",
         20, (0, GameSettings.SCREEN_HEIGHT - 20), color=(255, 255, 255))
+
+        if self.minimap and self.game_manager.player:
+            self.minimap.draw(
+                screen,
+                self.game_manager.player.position.x,
+                self.game_manager.player.position.y
+            )
+

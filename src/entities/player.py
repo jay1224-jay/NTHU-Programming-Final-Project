@@ -75,7 +75,7 @@ class Player(Entity):
         if self.game_manager.check_collision(pg.Rect(x, y, width, height)):
             y = self._snap_to_grid(y)
 
-        if not scene_manager.bag_opened and not scene_manager.setting_opened:
+        if not scene_manager.bag_opened and not scene_manager.setting_opened and not scene_manager.shop_opened:
             self.position = Position(x, y)
         # self.position = Position(self.position
 

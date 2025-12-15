@@ -70,12 +70,13 @@ class GameSettingSurface:
             sound_manager.set_bgm_volume(self.volume_slider.get_value())
 
     def update(self, dt: float):
-        self.close_button.update(dt)
-        self.save_button.update(dt)
-        self.load_button.update(dt)
-        self.back_button.update(dt)
-        self.volume_slider.update(dt)
-        self.mute_checkbox.update(dt)
+        if scene_manager.setting_opened:
+            self.close_button.update(dt)
+            self.save_button.update(dt)
+            self.load_button.update(dt)
+            self.back_button.update(dt)
+            self.volume_slider.update(dt)
+            self.mute_checkbox.update(dt)
 
     def draw(self, screen: pg.Surface):
         if scene_manager.setting_opened:

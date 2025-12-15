@@ -15,6 +15,8 @@ class SceneManager:
         self.bag_opened = False
         self.setting_opened = False
         self.shop_opened = False
+        self.navigation_opened = False
+        self.navigation_dest = None
         self._scene_transition_done = False
         self.alpha = 0
 
@@ -22,6 +24,11 @@ class SceneManager:
         self.bag_opened = False
     def open_bag(self):
         self.bag_opened = True
+
+    def close_navigation(self):
+        self.navigation_opened = False
+    def open_navigation(self):
+        self.navigation_opened = True
 
     def open_setting(self):
         self.setting_opened = True

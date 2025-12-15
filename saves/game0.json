@@ -111,8 +111,8 @@
       "enemy_trainers": [],
       "merchants": [
         {
-          "x": 13.0,
-          "y": 29.0,
+          "x": 5.0,
+          "y": 5.0,
           "classification": "stationary",
           "facing": "RIGHT",
           "max_tiles": 2
@@ -156,8 +156,8 @@
       ],
       "merchants": [
         {
-          "x": 16.0,
-          "y": 30.0,
+          "x": 3.0,
+          "y": 3.0,
           "classification": "stationary",
           "facing": "DOWN",
           "max_tiles": 2
@@ -167,8 +167,8 @@
   ],
   "current_map": "map.tmx",
   "player": {
-    "x": 15.7,
-    "y": 30.9
+    "x": 21.6,
+    "y": 30.5
   },
   "bag": {
     "monsters": [

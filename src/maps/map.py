@@ -50,12 +50,6 @@ class Map:
         if GameSettings.DRAW_HITBOXES:
             for rect in self._collision_map:
                 pg.draw.rect(screen, (255, 0, 0), camera.transform_rect(rect), 1)
-        '''
-        if darken:
-            self._surface.set_alpha(128)
-        else:
-            self._surface.set_alpha(255)
-        '''
     def check_collision(self, rect: pg.Rect) -> bool:
         return any(rect.colliderect(r) for r in self._collision_map)
 
@@ -88,7 +82,20 @@ class Map:
 
             image = pg.transform.scale(image, (GameSettings.TILE_SIZE, GameSettings.TILE_SIZE))
             target.blit(image, (x * GameSettings.TILE_SIZE, y * GameSettings.TILE_SIZE))
-    
+
+    def create_maze(self):
+        mazes = [[0 for _ in range(self.tmxdata.width)] for __ in range(self.tmxdata.height)]
+        for layer in self.tmxdata.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer) and (
+                    "collision" in layer.name.lower() or "house" in layer.name.lower()):
+                for x, y, gid in layer:
+                    if gid != 0:
+                        mazes[y][x] = 1
+
+        for i in self.teleporters:
+            mazes[i.pos.y//GameSettings.TILE_SIZE][i.pos.x//GameSettings.TILE_SIZE] = 1
+        return mazes
+
     def _create_collision_map(self) -> list[pg.Rect]:
         rects = []
         for layer in self.tmxdata.visible_layers:

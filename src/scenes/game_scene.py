@@ -11,11 +11,16 @@ from typing import override
 from src.data import bag
 from .setting_surface import GameSettingSurface
 from .shop_surface import GameShopSurface
+from .navigate_surface import NavigateSurface
 
 from src.interface.components import Button
 from src.utils import load_tmx
 from .minimap import MiniMap
 
+UP = 1
+DOWN = 2
+LEFT = 3
+RIGHT = 4
 
 class GameScene(Scene):
     game_manager: GameManager
@@ -58,14 +63,17 @@ class GameScene(Scene):
         self.navigation_button = Button(
             "UI/button_navig.png", "UI/button_navig_hover.png",
             GameSettings.SCREEN_WIDTH - 75 - 50 - 70, 50, 50, 50,
-            lambda: scene_manager.open_bag()
+            lambda: scene_manager.open_navigation()
         )
         self.setting_surface = None
         self.shop_surface = None
+        self.navigation_surface = None
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
 
         self.minimap = None
         self.last_map_name = ""
+
+        self.navigation_path = None
 
     def create_minimap(self):
         try:
@@ -119,6 +127,7 @@ class GameScene(Scene):
             "saves/game0.json").to_dict()
         self.setting_surface = GameSettingSurface(data["volume"])
         self.shop_surface = GameShopSurface(self.text_drawer)
+        self.navigation_surface = NavigateSurface()
         val = data["volume"]["value"]
         mute = data["volume"]["mute"]
         if mute:
@@ -127,6 +136,7 @@ class GameScene(Scene):
             sound_manager.set_bgm_volume(val)
 
         self.create_minimap()
+        # self.game_manager.
         self.last_map_name = self.game_manager.current_map.path_name
     @override
     def exit(self) -> None:
@@ -149,11 +159,17 @@ class GameScene(Scene):
             enemy.update(dt)
         for merchant in self.game_manager.current_merchants:
             merchant.update(dt)
+
+        if scene_manager.navigation_dest:
+            self.navigation_path = self.game_manager.search_path(scene_manager.navigation_dest)
+            print(self.navigation_path)
+            scene_manager.navigation_dest = None
             
         # Update others
         self.game_manager.bag.update(dt)
         self.setting_surface.update(dt)
         self.shop_surface.update(dt)
+        self.navigation_surface.update(dt)
         self.setting_button.update(dt)
         self.backpack_button.update(dt)
         self.navigation_button.update(dt)
@@ -227,7 +243,7 @@ class GameScene(Scene):
 
         self.setting_button.draw(screen)
         self.navigation_button.draw(screen)
-        if scene_manager.bag_opened or scene_manager.setting_opened or scene_manager.shop_opened:
+        if scene_manager.bag_opened or scene_manager.setting_opened or scene_manager.shop_opened or scene_manager.navigation_opened:
             dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
             dark_overlay.fill((0, 0, 0, 128))
             screen.blit(dark_overlay, (0, 0))
@@ -236,6 +252,7 @@ class GameScene(Scene):
         self.game_manager.bag.draw(screen)
         self.setting_surface.draw(screen)
         self.shop_surface.draw(screen)
+        self.navigation_surface.draw(screen)
         self.backpack_button.draw(screen)
 
 
@@ -243,10 +260,31 @@ class GameScene(Scene):
         f"Tile Pos: ({int(self.game_manager.player.position.x//GameSettings.TILE_SIZE)},{int(self.game_manager.player.position.y//GameSettings.TILE_SIZE)})",
         20, (0, GameSettings.SCREEN_HEIGHT - 20), color=(255, 255, 255))
 
+        # Navigation
+        if self.navigation_path:
+            for i in self.navigation_path:
+                x = i[0]
+                y = i[1]
+                # print(i)
+                # self.text_drawer.draw(screen,i)
+                arrow_path = "UI/raw/UI_Flat_IconArrow01a.png" # RIGHT
+                arrow_surface = pg.Surface((40, 40), pg.SRCALPHA) # invisible background
+                # arrow_surface.convert_alpha()
+                arrow = Sprite(arrow_path, (40, 40))
+                arrow.draw(arrow_surface)
+                if i[2] == UP:
+                    screen.blit(pg.transform.rotate(arrow_surface, 90), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
+                if i[2] == DOWN:
+                    screen.blit(pg.transform.rotate(arrow_surface, -90), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
+                if i[2] == LEFT:
+                    screen.blit(pg.transform.rotate(arrow_surface, 180), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
+                if i[2] == RIGHT:
+                    screen.blit(pg.transform.rotate(arrow_surface, 0), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
+
+
         if self.minimap and self.game_manager.player:
             self.minimap.draw(
                 screen,
                 self.game_manager.player.position.x,
                 self.game_manager.player.position.y
             )
-

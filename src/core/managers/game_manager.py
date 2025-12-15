@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 
-from src.utils import Logger, GameSettings, Position, Teleport
+from src.utils import Logger, GameSettings, Position, Teleport, PathFinder
 
 if TYPE_CHECKING:
     from src.maps.map import Map
@@ -50,6 +50,9 @@ class GameManager:
         self.next_map = ""
         self.next_pos = None
 
+        self.current_maze = None # self.create_maze()
+        self.path_finder = PathFinder()
+
         self.volume_data = {"value": 50, "mute": 0}
         
     @property
@@ -83,6 +86,23 @@ class GameManager:
             self.should_change_scene = False
             if self.player:
                 self.player.position = self.next_pos
+        self.current_maze = self.create_maze()
+
+    def search_path(self, dest):
+        return self.path_finder.search_path(self.current_maze, (int(self.player.position.x//GameSettings.TILE_SIZE), int(self.player.position.y//GameSettings.TILE_SIZE)+1), dest)
+
+    def create_maze(self):
+        maze = self.maps[self.current_map_key].create_maze()
+
+        for entity in self.enemy_trainers[self.current_map_key]:
+            _x = entity.animation.rect.x // GameSettings.TILE_SIZE
+            _y = entity.animation.rect.y // GameSettings.TILE_SIZE
+            maze[_y][_x] = 1
+        for entity in self.merchants[self.current_map_key]:
+            _x = entity.animation.rect.x // GameSettings.TILE_SIZE
+            _y = entity.animation.rect.y // GameSettings.TILE_SIZE
+            maze[_y][_x] = 1
+        return maze
             
     def check_collision(self, rect: pg.Rect) -> bool:
         if self.maps[self.current_map_key].check_collision(rect):

@@ -55,6 +55,11 @@ class GameScene(Scene):
             GameSettings.SCREEN_WIDTH - 75 - 50 - 10, 50, 50, 50,
             lambda: scene_manager.open_bag()
         )
+        self.navigation_button = Button(
+            "UI/button_navig.png", "UI/button_navig_hover.png",
+            GameSettings.SCREEN_WIDTH - 75 - 50 - 70, 50, 50, 50,
+            lambda: scene_manager.open_bag()
+        )
         self.setting_surface = None
         self.shop_surface = None
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
@@ -75,12 +80,11 @@ class GameScene(Scene):
 
             full_map_surface = pg.Surface((width, height))
 
-            for layer in tmx_data.visible_layers:
-                if hasattr(layer, 'data'):
-                    for x, y, gid in layer:
-                        tile = tmx_data.get_tile_image_by_gid(gid)
-                        if tile:
-                            full_map_surface.blit(tile, (x * tmx_data.tilewidth, y * tmx_data.tileheight))
+            for layer in tmx_data.visible_layers: # tiled visible icon
+                for x, y, gid in layer:
+                    tile = tmx_data.get_tile_image_by_gid(gid)
+                    if tile:
+                        full_map_surface.blit(tile, (x * tmx_data.tilewidth, y * tmx_data.tileheight))
 
             self.minimap = MiniMap(full_map_surface, max_width=200, position=(10, 30), border_color='black')
 
@@ -152,7 +156,7 @@ class GameScene(Scene):
         self.shop_surface.update(dt)
         self.setting_button.update(dt)
         self.backpack_button.update(dt)
-
+        self.navigation_button.update(dt)
 
         if self.game_manager.player is not None and self.online_manager is not None:
             _ = self.online_manager.update(
@@ -222,6 +226,7 @@ class GameScene(Scene):
 
 
         self.setting_button.draw(screen)
+        self.navigation_button.draw(screen)
         if scene_manager.bag_opened or scene_manager.setting_opened or scene_manager.shop_opened:
             dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
             dark_overlay.fill((0, 0, 0, 128))
@@ -232,6 +237,7 @@ class GameScene(Scene):
         self.setting_surface.draw(screen)
         self.shop_surface.draw(screen)
         self.backpack_button.draw(screen)
+
 
         self.text_drawer.draw(screen,
         f"Tile Pos: ({int(self.game_manager.player.position.x//GameSettings.TILE_SIZE)},{int(self.game_manager.player.position.y//GameSettings.TILE_SIZE)})",

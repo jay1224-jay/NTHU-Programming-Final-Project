@@ -52,6 +52,9 @@ _d = {
     ]
 }
 
+def get_price(level, hp):
+    return level * 10 + hp * 2
+
 class GameShopSurface:
     def __init__(self, text_drawer):
         self.text_drawer = TextDrawer("assets/fonts/Minecraft.ttf")
@@ -87,6 +90,8 @@ class GameShopSurface:
 
         self._shop_data = _d.copy()
         self.player_monster_data = None
+
+        self._data = GameManager.load("saves/game0.json").to_dict()
 
     def buy(self, purchase_type, item_index):
         # Buy and Save
@@ -126,6 +131,8 @@ class GameShopSurface:
         else:
             print("Error: Not enough coins...")
 
+        self._data = GameManager.load("saves/game0.json").to_dict()
+
     def sell(self, item_index, sold_price):
 
         data = GameManager.load("saves/game0.json").to_dict()
@@ -142,6 +149,7 @@ class GameShopSurface:
         gm = GameManager.from_dict(data)
         gm.save("saves/game0.json")
         self.player_monster_data = data["bag"]["monsters"]
+        self._data = GameManager.load("saves/game0.json").to_dict()
 
     def change_surface(self, n):
         if n == 1:
@@ -182,7 +190,18 @@ class GameShopSurface:
             self.buy_button.draw(self.shop_surface)
             self.sell_button.draw(self.shop_surface)
 
+            """
+            TODO: show player's money when trading
+            """
+            mon = None
 
+            player_bag = self._data["bag"]
+            coin_ind = -1.5
+            for i in range(len(player_bag["items"])):
+                if player_bag["items"][i]["name"].lower() == "coins":
+                    coin_ind = i
+            mon = player_bag["items"][coin_ind]["count"]
+            self.text_drawer.draw(self.shop_surface, f"Money: {mon}", 20, (170, 30))
 
             if self._status == BUY:
                 start_x = 20
@@ -292,7 +311,7 @@ class GameShopSurface:
                                           (30 + 25, 40))
 
                     # Price
-                    monster_price = monster["level"]
+                    monster_price = get_price(monster["level"], monster["hp"])
                     self.text_drawer.draw(monster_surface, f"${monster_price}", 20, (240, 20),
                                           "right")
                     # Price

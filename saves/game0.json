@@ -165,19 +165,40 @@
       ]
     }
   ],
-  "current_map": "place.tmx",
+  "current_map": "map.tmx",
   "player": {
-    "x": 3.0,
-    "y": 6.6
+    "x": 15.7,
+    "y": 30.9
   },
   "bag": {
     "monsters": [
       {
-        "name": "Pickachu",
-        "hp": 126,
-        "max_hp": 139,
-        "level": 130,
-        "sprite_path": "menu_sprites/menusprite1.png"
+        "name": "Dragonite",
+        "hp": 55,
+        "max_hp": 135,
+        "level": 14,
+        "sprite_path": "menu_sprites/menusprite6.png"
+      },
+      {
+        "name": "Charizard",
+        "hp": 160,
+        "max_hp": 160,
+        "level": 7,
+        "sprite_path": "menu_sprites/menusprite2.png"
+      },
+      {
+        "name": "Charizard",
+        "hp": 170,
+        "max_hp": 170,
+        "level": 9,
+        "sprite_path": "menu_sprites/menusprite2.png"
+      },
+      {
+        "name": "Venusaur",
+        "hp": 146,
+        "max_hp": 146,
+        "level": 8,
+        "sprite_path": "menu_sprites/menusprite4.png"
       }
     ],
     "items": [
@@ -188,12 +209,12 @@
       },
       {
         "name": "Coins",
-        "count": 54,
+        "count": 164,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
         "name": "Pokeball",
-        "count": 88,
+        "count": 85,
         "sprite_path": "ingame_ui/ball.png"
       }
     ]

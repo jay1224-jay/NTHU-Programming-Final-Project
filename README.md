@@ -20,8 +20,11 @@ Author: Jay Wang (王宥傑)
 
 ### 1. New map (Done)
 A new 15x10 map where player can teleport
-### 2. Shop 
-### 3. Online interaction
+### 2. Shop (Done)
+Buy and sell surface
+### 3. Online interaction (Done except chat overlay)
+Send direction in change 
 ### 4. Advance battle
-### 5. Minimap
-### 6. Navigation
+### 5. Minimap (Done)
+max width of 200 minimap
+### 6. Navigation 

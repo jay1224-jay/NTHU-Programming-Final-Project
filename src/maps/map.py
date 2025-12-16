@@ -93,7 +93,10 @@ class Map:
                         mazes[y][x] = 1
 
         for i in self.teleporters:
-            mazes[i.pos.y//GameSettings.TILE_SIZE][i.pos.x//GameSettings.TILE_SIZE] = 1
+            try:
+                mazes[i.pos.y//GameSettings.TILE_SIZE][i.pos.x//GameSettings.TILE_SIZE] = 1
+            except IndexError:
+                pass
         return mazes
 
     def _create_collision_map(self) -> list[pg.Rect]:

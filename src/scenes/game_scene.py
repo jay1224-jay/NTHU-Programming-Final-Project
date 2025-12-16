@@ -155,6 +155,7 @@ class GameScene(Scene):
         # Update player and other data
         if self.game_manager.player:
             self.game_manager.player.update(dt)
+
         for enemy in self.game_manager.current_enemy_trainers:
             enemy.update(dt)
         for merchant in self.game_manager.current_merchants:
@@ -169,10 +170,12 @@ class GameScene(Scene):
         self.game_manager.bag.update(dt)
         self.setting_surface.update(dt)
         self.shop_surface.update(dt)
-        self.navigation_surface.update(dt)
+        if self.game_manager.current_map.path_name == 'map.tmx':
+            self.navigation_surface.update(dt)
         self.setting_button.update(dt)
         self.backpack_button.update(dt)
-        self.navigation_button.update(dt)
+        if self.game_manager.current_map.path_name == "map.tmx":
+            self.navigation_button.update(dt)
 
         if self.game_manager.player is not None and self.online_manager is not None:
             _ = self.online_manager.update(
@@ -202,10 +205,51 @@ class GameScene(Scene):
             camera = self.game_manager.player.camera
             # camera = PositionCamera(16 * GameSettings.TILE_SIZE, 30 * GameSettings.TILE_SIZE)
             self.game_manager.current_map.draw(screen, camera, scene_manager.bag_opened)
-            self.game_manager.player.draw(screen, camera)
+
         else:
             camera = PositionCamera(0, 0)
             self.game_manager.current_map.draw(screen, camera)
+
+        # Navigation
+        # print(self.navigation_path)
+        if self.navigation_path and self.game_manager.current_map.path_name == 'map.tmx':
+            # print(self.navigation_path[0])
+            for i in self.navigation_path:
+                x = i[0]
+                y = i[1]
+                # print(i)
+                # self.text_drawer.draw(screen,i)
+                arrow_path = "UI/raw/UI_Flat_IconArrow01a.png"  # RIGHT
+                arrow_surface = pg.Surface((40, 40), pg.SRCALPHA)  # invisible background
+                # arrow_surface.convert_alpha()
+                arrow = Sprite(arrow_path, (40, 40))
+                arrow.draw(arrow_surface)
+                if i[2] == UP:
+                    # print("up")
+                    screen.blit(pg.transform.rotate(arrow_surface, 90),
+                                (x * GameSettings.TILE_SIZE - camera.x, y * GameSettings.TILE_SIZE - camera.y, 20,
+                                 20))
+                if i[2] == DOWN:
+                    screen.blit(pg.transform.rotate(arrow_surface, -90),
+                                (x * GameSettings.TILE_SIZE - camera.x, y * GameSettings.TILE_SIZE - camera.y, 20,
+                                 20))
+                if i[2] == LEFT:
+                    screen.blit(pg.transform.rotate(arrow_surface, 180),
+                                (x * GameSettings.TILE_SIZE - camera.x, y * GameSettings.TILE_SIZE - camera.y, 20,
+                                 20))
+                if i[2] == RIGHT:
+                    screen.blit(pg.transform.rotate(arrow_surface, 0),
+                                (x * GameSettings.TILE_SIZE - camera.x, y * GameSettings.TILE_SIZE - camera.y, 20,
+                                 20))
+            end_rect = pg.Rect(self.navigation_path[0][0]*64 - camera.x, self.navigation_path[0][1]*64 - camera.y, 40, 40)
+            pg.draw.rect(screen, "red", end_rect)
+            real_end_rect = pg.Rect(self.navigation_path[0][0]*64, self.navigation_path[0][1]*64, 40, 40)
+            # print(end_rect, self.game_manager.player.animation.rect)
+            if real_end_rect.colliderect(self.game_manager.player.animation.rect):
+                # print("collide with player")
+                self.navigation_path = None
+
+        self.game_manager.player.draw(screen, camera)
         for enemy in self.game_manager.current_enemy_trainers:
             enemy.draw(screen, camera)
 
@@ -242,7 +286,8 @@ class GameScene(Scene):
 
 
         self.setting_button.draw(screen)
-        self.navigation_button.draw(screen)
+        if self.game_manager.current_map.path_name == "map.tmx":
+            self.navigation_button.draw(screen)
         if scene_manager.bag_opened or scene_manager.setting_opened or scene_manager.shop_opened or scene_manager.navigation_opened:
             dark_overlay = pg.Surface(screen.get_size(), pg.SRCALPHA)
             dark_overlay.fill((0, 0, 0, 128))
@@ -252,7 +297,8 @@ class GameScene(Scene):
         self.game_manager.bag.draw(screen)
         self.setting_surface.draw(screen)
         self.shop_surface.draw(screen)
-        self.navigation_surface.draw(screen)
+        if self.game_manager.current_map.path_name == "map.tmx":
+            self.navigation_surface.draw(screen)
         self.backpack_button.draw(screen)
 
 
@@ -260,26 +306,6 @@ class GameScene(Scene):
         f"Tile Pos: ({int(self.game_manager.player.position.x//GameSettings.TILE_SIZE)},{int(self.game_manager.player.position.y//GameSettings.TILE_SIZE)})",
         20, (0, GameSettings.SCREEN_HEIGHT - 20), color=(255, 255, 255))
 
-        # Navigation
-        if self.navigation_path:
-            for i in self.navigation_path:
-                x = i[0]
-                y = i[1]
-                # print(i)
-                # self.text_drawer.draw(screen,i)
-                arrow_path = "UI/raw/UI_Flat_IconArrow01a.png" # RIGHT
-                arrow_surface = pg.Surface((40, 40), pg.SRCALPHA) # invisible background
-                # arrow_surface.convert_alpha()
-                arrow = Sprite(arrow_path, (40, 40))
-                arrow.draw(arrow_surface)
-                if i[2] == UP:
-                    screen.blit(pg.transform.rotate(arrow_surface, 90), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
-                if i[2] == DOWN:
-                    screen.blit(pg.transform.rotate(arrow_surface, -90), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
-                if i[2] == LEFT:
-                    screen.blit(pg.transform.rotate(arrow_surface, 180), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
-                if i[2] == RIGHT:
-                    screen.blit(pg.transform.rotate(arrow_surface, 0), (x*GameSettings.TILE_SIZE - camera.x, y*GameSettings.TILE_SIZE - camera.y, 20, 20))
 
 
         if self.minimap and self.game_manager.player:

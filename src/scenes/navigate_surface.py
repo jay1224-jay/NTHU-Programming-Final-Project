@@ -15,7 +15,7 @@ button_data = [
     {
         "name": "spawn",
         "dest_x": "16",
-        "dest_y": "30"
+        "dest_y": "31"
     },
     {
         "name": "gym",
@@ -23,9 +23,9 @@ button_data = [
         "dest_y": "24"
     },
     {
-        "name": "dummyyy",
-        "dest_x": "24",
-        "dest_y": "24"
+        "name": "tl-corner",
+        "dest_x": "56",
+        "dest_y": "7"
     }
 ]
 offset = 20

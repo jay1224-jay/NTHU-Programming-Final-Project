@@ -199,6 +199,20 @@
         "max_hp": 146,
         "level": 8,
         "sprite_path": "menu_sprites/menusprite4.png"
+      },
+      {
+        "name": "Gengar",
+        "hp": 89,
+        "max_hp": 131,
+        "level": 20,
+        "sprite_path": "menu_sprites/menusprite5.png"
+      },
+      {
+        "name": "Blastoise",
+        "hp": 129,
+        "max_hp": 129,
+        "level": 7,
+        "sprite_path": "menu_sprites/menusprite3.png"
       }
     ],
     "items": [
@@ -214,7 +228,7 @@
       },
       {
         "name": "Pokeball",
-        "count": 85,
+        "count": 83,
         "sprite_path": "ingame_ui/ball.png"
       }
     ]

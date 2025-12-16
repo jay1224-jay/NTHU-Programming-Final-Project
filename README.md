@@ -8,11 +8,9 @@ Author: Jay Wang (王宥傑)
 
 ## About Creativity
 
-1. Battle-Winning Strategy Search Using Recursion (limited searching depth)
-2. Chat System
-3. Teleportation Between Players
-> If time permits,<br>
-> train a powerful model based on random battle data
+1. Day-Night Cycle and lamps (above ```night_overlay```), similar to Minecraft
+
+2. Teleportation Between Players
 
 ## About Checkpoint 3
 
@@ -27,4 +25,5 @@ Send direction in change
 ### 4. Advance battle
 ### 5. Minimap (Done)
 max width of 200 minimap
-### 6. Navigation 
+### 6. Navigation  (Done)
+use bfs to search the shortest path

@@ -219,7 +219,7 @@
       {
         "name": "Potion",
         "count": 8,
-        "sprite_path": "ingame_ui/potion.png"
+        "sprite_path": "ingame_ui/heal_potion.png"
       },
       {
         "name": "Coins",

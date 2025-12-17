@@ -41,11 +41,17 @@ class Engine:
     def run(self):
         Logger.info("Running the Game Loop ...")
 
+        game_time = 0
+
         while self.running:
             dt = self.clock.tick(GameSettings.FPS) / 1000.0
             self.handle_events()
             self.update(dt)
             self.render()
+            game_time += dt
+        print("Leave the gae")
+        game_time = int(game_time)
+        print("=== Time played: {} seconds ===".format(game_time))
 
     def handle_events(self):
         input_manager.reset()

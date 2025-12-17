@@ -168,8 +168,10 @@ class GameScene(Scene):
             
         # Update others
         self.game_manager.bag.update(dt)
-        self.setting_surface.update(dt)
-        self.shop_surface.update(dt)
+        if scene_manager.setting_opened:
+            self.setting_surface.update(dt)
+        if scene_manager.shop_opened:
+            self.shop_surface.update(dt)
         if self.game_manager.current_map.path_name == 'map.tmx':
             self.navigation_surface.update(dt)
         self.setting_button.update(dt)
@@ -294,9 +296,12 @@ class GameScene(Scene):
             screen.blit(dark_overlay, (0, 0))
 
 
-        self.game_manager.bag.draw(screen)
-        self.setting_surface.draw(screen)
-        self.shop_surface.draw(screen)
+        if scene_manager.bag_opened:
+            self.game_manager.bag.draw(screen)
+        if scene_manager.setting_opened:
+            self.setting_surface.draw(screen)
+        if scene_manager.shop_opened:
+            self.shop_surface.draw(screen)
         if self.game_manager.current_map.path_name == "map.tmx":
             self.navigation_surface.draw(screen)
         self.backpack_button.draw(screen)

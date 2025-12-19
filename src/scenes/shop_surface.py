@@ -40,9 +40,19 @@ _d = {
     ],
     "items": [
         {
-            "name": "Potion",
-            "price": 100,
-            "sprite_path": "ingame_ui/potion.png"
+            "name": "Heal Potion",
+            "price": 50,
+            "sprite_path": "ingame_ui/heal_potion.png"
+        },
+{
+            "name": "Defense Potion",
+            "price": 50,
+            "sprite_path": "ingame_ui/defense_potion.png"
+        },
+{
+            "name": "Strength Potion",
+            "price": 50,
+            "sprite_path": "ingame_ui/attack_potion.png"
         },
         {
             "name": "Pokeball",
@@ -62,6 +72,7 @@ class GameShopSurface:
         self.surface_x = GameSettings.SCREEN_WIDTH//2 - self.surface_width//2
         self.surface_y = GameSettings.SCREEN_HEIGHT//2 - self.surface_height//2
         self.shop_surface = pg.Surface((self.surface_width, self.surface_height))
+        self.bg = Sprite("UI/raw/UI_Flat_FrameSlot03a.png", (self.surface_width, self.surface_height))
 
         self.close_button = Button(
             "UI/button_x.png", "UI/button_x_hover.png",
@@ -186,6 +197,7 @@ class GameShopSurface:
     def draw(self, screen: pg.Surface):
         if scene_manager.shop_opened:
             self.shop_surface.fill("ORANGE")
+            # self.shop_surface.blit(self.bg.image, (0, 0))
             self.close_button.draw(self.shop_surface)
             self.buy_button.draw(self.shop_surface)
             self.sell_button.draw(self.shop_surface)

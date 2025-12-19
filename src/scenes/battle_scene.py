@@ -1,3 +1,6 @@
+from asyncio import shield
+from functools import partial
+
 import pygame as pg
 
 from src.core.managers import game_manager
@@ -11,6 +14,7 @@ from typing import override
 from src.sprites import Sprite
 
 from random import randint
+from functools import partial
 
 MONSTERS = ["Pickachu", "Charizard", "Blastoise", "Venusaur", "Gengar", "Dragonite"]
 
@@ -77,6 +81,8 @@ class BattleScene(Scene):
         self.attack_time_lapse = 0
         self.start_fighting = 0
         self.start_attacking = 0
+        self.attack_potion_applied = False
+        self.defense_potion_applied = False
 
     def start_attack(self):
         self.attack_time_lapse = 0
@@ -89,7 +95,11 @@ class BattleScene(Scene):
         if self.start_attacking:
             if self.attack_turn % 2 == 0 and self.bag._monsters_data[self.current_monster]["hp"]:
                 if self.attack_time_lapse >= 1:
-                    self.opponent_monster["hp"] -= self.bag._monsters_data[self.current_monster]["level"]
+                    e = 1
+                    if self.attack_potion_applied:
+                        e = 1.5
+                        self.attack_potion_applied = False
+                    self.opponent_monster["hp"] -= int(self.bag._monsters_data[self.current_monster]["level"] * e) * 2
                     self.attack_time_lapse = 0
                     self.monster_sprite_size = 200
                     if self.opponent_monster["hp"] <= 0:
@@ -107,7 +117,11 @@ class BattleScene(Scene):
             if self.attack_time_lapse >= 1: # delay
                 self.opponent_sprite_size = 200
                 self.attack_time_lapse = 0
-                self.bag._monsters_data[self.current_monster]["hp"] -= self.opponent_monster["level"]
+                e = 1
+                if self.defense_potion_applied:
+                    e = 0.5
+                    self.defense_potion_applied = False
+                self.bag._monsters_data[self.current_monster]["hp"] -= int(self.opponent_monster["level"]*e) * 2
                 if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
                     self.bag._monsters_data[self.current_monster]["hp"] = 0
                     self.battle_winner = "enemy"
@@ -123,6 +137,23 @@ class BattleScene(Scene):
         self.current_monster += 1
         self.current_monster %= len(self.bag._monsters_data)
 
+    def use_item(self, ind):
+        item_data = self.bag._items_data[ind]
+        print("Use item:", item_data["name"])
+        item_data["count"] -= 1
+
+        if "heal" in item_data["name"].lower():
+            self.bag._monsters_data[self.current_monster]["hp"] = \
+            min(self.bag._monsters_data[self.current_monster]["max_hp"],
+                int(self.bag._monsters_data[self.current_monster]["hp"] * 1.5))
+        elif "strength" in item_data["name"].lower():
+            self.attack_potion_applied = True
+        elif "defense" in item_data["name"].lower():
+            self.defense_potion_applied = True
+
+        self.bag._items_data[ind] = item_data
+
+
     @override
     def enter(self) -> None:
         sound_manager.play_bgm("RBY 107 Battle! (Trainer).ogg")
@@ -133,7 +164,8 @@ class BattleScene(Scene):
         self.attack_turn = 0
         self.attack_time_lapse = 0
         self.start_fighting = 0
-
+        self.attack_potion_applied = False
+        self.defense_potion_applied = False
 
         _max_hp = randint(100, 200)
         _chosen_monster = randint(0, len(MONSTERS) - 1)
@@ -159,11 +191,13 @@ class BattleScene(Scene):
             _game_manager = GameManager.load("saves/game0.json")
             data = _game_manager.to_dict()
             data["bag"]["monsters"][self.current_monster]["hp"] = self.bag._monsters_data[self.current_monster]["hp"]
+            data["bag"]["items"] = self.bag._items_data
             # print(self.bag._monsters_data[self.current_monster])
             if self.bag._monsters_data[self.current_monster]["hp"] <= 0:
                 del data["bag"]["monsters"][self.current_monster]
             if self.battle_winner == "player":
                 data["bag"]["monsters"].append(self.opponent_monster)
+            # print(data["bag"]["items"])
             _game_manager = _game_manager.from_dict(data)
             _game_manager.save("saves/game0.json")
         print("Exiting Battle Scene...")
@@ -238,7 +272,20 @@ class BattleScene(Scene):
         screen.blit(opponent_monster_info_surface, (1000, 300))
 
         if self.opponent_monster["hp"] > 0 and monster["hp"] > 0 and self.start_fighting and self.attack_turn % 2 == 0:
+            # print("in")
             self.attack_button.draw(self.option_surface)
+            self.text_drawer.draw(self.option_surface, "Items:", 30, (50, 50), color="white")
+            item_data = self.bag._items_data
+            for i in range(len(item_data)):
+                if "potion" not in item_data[i]["name"].lower() or item_data[i]["count"] <= 0:
+                    continue
+                btn = Button(item_data[i]["sprite_path"], item_data[i]["sprite_path"], 80 + i * 90, 50, 50, 50,
+                             partial(self.use_item, i), surface_x=self.option_surface_x, surface_y=self.option_surface_y)
+                # self.option_surface.blit(item_sprite.image, (80 + i * 90, 50))
+                btn.update(0.17)
+                btn.draw(self.option_surface)
+                self.text_drawer.draw(self.option_surface, f"x{item_data[i]["count"]}", 16, (80 + i * 90 + 30, 120), color="white", align="center")
+
 
         if not self.start_fighting:
             self.fight_button.draw(self.option_surface)
@@ -259,3 +306,13 @@ class BattleScene(Scene):
             screen.blit(pg.transform.grayscale(opponent_monster_sprite.image), (800, 200))
         else:
             screen.blit(opponent_monster_sprite.image, (800, 200))
+
+
+        # potion effect
+        if self.defense_potion_applied:
+            shield_sprite = Sprite("ingame_ui/options2.png", (30,30))
+            screen.blit(shield_sprite.image, (320, 360))
+
+        if self.attack_potion_applied:
+            sword_sprite = Sprite("ingame_ui/options1.png", (30,30))
+            screen.blit(sword_sprite.image, (320, 330))

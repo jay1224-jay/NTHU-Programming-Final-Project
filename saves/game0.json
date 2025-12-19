@@ -173,63 +173,66 @@
   "bag": {
     "monsters": [
       {
-        "name": "Dragonite",
-        "hp": 55,
-        "max_hp": 135,
-        "level": 14,
-        "sprite_path": "menu_sprites/menusprite6.png"
-      },
-      {
         "name": "Charizard",
-        "hp": 160,
+        "hp": 150,
         "max_hp": 160,
         "level": 7,
         "sprite_path": "menu_sprites/menusprite2.png"
       },
       {
+        "name": "Gengar",
+        "hp": 57,
+        "max_hp": 131,
+        "level": 11,
+        "sprite_path": "menu_sprites/menusprite5.png"
+      },
+      {
         "name": "Charizard",
-        "hp": 170,
-        "max_hp": 170,
-        "level": 9,
+        "hp": 155,
+        "max_hp": 155,
+        "level": 15,
+        "sprite_path": "menu_sprites/menusprite2.png"
+      },
+      {
+        "name": "Charizard",
+        "hp": 120,
+        "max_hp": 120,
+        "level": 19,
         "sprite_path": "menu_sprites/menusprite2.png"
       },
       {
         "name": "Venusaur",
-        "hp": 146,
-        "max_hp": 146,
-        "level": 8,
+        "hp": 181,
+        "max_hp": 181,
+        "level": 1,
         "sprite_path": "menu_sprites/menusprite4.png"
-      },
-      {
-        "name": "Gengar",
-        "hp": 89,
-        "max_hp": 131,
-        "level": 20,
-        "sprite_path": "menu_sprites/menusprite5.png"
-      },
-      {
-        "name": "Blastoise",
-        "hp": 129,
-        "max_hp": 129,
-        "level": 7,
-        "sprite_path": "menu_sprites/menusprite3.png"
       }
     ],
     "items": [
       {
-        "name": "Potion",
-        "count": 8,
-        "sprite_path": "ingame_ui/heal_potion.png"
-      },
-      {
         "name": "Coins",
-        "count": 164,
+        "count": 1354,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
         "name": "Pokeball",
-        "count": 83,
+        "count": 80,
         "sprite_path": "ingame_ui/ball.png"
+      },
+      {
+        "name": "Defense Potion",
+        "sprite_path": "ingame_ui/defense_potion.png",
+        "count": 5
+      },
+      {
+        "name": "Strength Potion",
+        "sprite_path": "ingame_ui/attack_potion.png",
+        "count": 5
+      },
+      {
+        "name": "Heal Potion",
+        "sprite_path": "ingame_ui/heal_potion.png",
+        "count": 5
       }
     ]
   },

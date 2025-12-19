@@ -49,7 +49,7 @@ class Engine:
             self.update(dt)
             self.render()
             game_time += dt
-        print("Leave the gae")
+        print("Leave the game")
         game_time = int(game_time)
         print("=== Time played: {} seconds ===".format(game_time))
 

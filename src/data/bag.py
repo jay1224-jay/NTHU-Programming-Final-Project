@@ -67,11 +67,13 @@ class Bag:
 
     def draw(self, screen: pg.Surface):
         if scene_manager.bag_opened:
+
             if self.not_updating_bag:
                 _data = GameManager.load("saves/game0.json").to_dict()["bag"]
                 self._monsters_data = _data["monsters"]
                 self._items_data = _data["items"]
                 self.not_updating_bag = False
+                self.start_y = self.close_button.hitbox.y - 30
             self.bag_surface.fill("ORANGE")
             self.close_button.draw(self.bag_surface)
             self.text_drawer.draw(self.bag_surface, "BAG", 26, (10, 10))
@@ -80,10 +82,10 @@ class Bag:
             i = 0
             for item in self._items_data:
                 item_sprite = Sprite(item["sprite_path"], (30, 30))
-                self.bag_surface.blit(item_sprite.image, (400, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40))
+                self.bag_surface.blit(item_sprite.image, (380, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40))
                 self.text_drawer.draw(self.bag_surface, item["name"], 16,
-                                      (400 + 30 + 30, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7))
-                self.text_drawer.draw(self.bag_surface, f"x{item["count"]}", 16, (400 + 30 + 150,
+                                      (380 + 40, self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7))
+                self.text_drawer.draw(self.bag_surface, f"x{item["count"]}", 16, (380 + 30 + 150 + 20,
                                self.close_button.hitbox.y + self.close_button.hitbox.height + 15 + i*40+7), "right")
                 i += 1
 

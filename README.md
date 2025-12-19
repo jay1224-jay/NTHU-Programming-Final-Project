@@ -23,6 +23,14 @@ Buy and sell surface
 ### 3. Online interaction (Done except chat overlay)
 Send direction in change 
 ### 4. Advance battle
+- heal potion: +50% of hp
+- defense potion: -50% of opponent's attack
+- attack potion: +50% of damage
+
+```
+damage = monster_level * efficiency * 2
+```
+where efficiency is subject to potions.
 ### 5. Minimap (Done)
 max width of 200 minimap
 ### 6. Navigation  (Done)

@@ -25,7 +25,7 @@ Send direction in change
 ### 4. Advance battle
 - heal potion: +50% of hp
 - defense potion: -50% of opponent's attack
-- attack potion: +50% of damage
+- strength potion: +50% of damage
 
 ```
 damage = monster_level * efficiency * 2

@@ -16,6 +16,7 @@ from .navigate_surface import NavigateSurface
 from src.interface.components import Button
 from src.utils import load_tmx
 from .minimap import MiniMap
+import math
 
 UP = 1
 DOWN = 2
@@ -74,6 +75,7 @@ class GameScene(Scene):
         self.last_map_name = ""
 
         self.navigation_path = None
+        self.game_time = 0
 
     def create_minimap(self):
         try:
@@ -138,6 +140,7 @@ class GameScene(Scene):
         self.create_minimap()
         # self.game_manager.
         self.last_map_name = self.game_manager.current_map.path_name
+        # self.game_time = 0
     @override
     def exit(self) -> None:
         if self.online_manager:
@@ -187,10 +190,32 @@ class GameScene(Scene):
                 self.game_manager.current_map.path_name,
                 dt
             )
+        if self.setting_surface.allow_day_night_cycle_checkbox.get_value():
+            self.game_time += dt
+
         if self.setting_surface.save_settings:
             self.save_settings()
         if self.setting_surface.load_settings:
             self.load_settings()
+
+    def draw_day_night_cycle(self, screen):
+
+        l_r, l_g, l_b = 40, 40, 150
+        h_r, h_g, h_b = 255, 255, 255
+
+        cycle_duration = 60
+
+        r = l_r + (h_r - l_r) * ((math.sin((2*3.1415/cycle_duration)*self.game_time))+1)/2
+        g = l_g + (h_g - l_g) * ((math.sin((2*3.1415/cycle_duration) * self.game_time))+1)/2
+        b = l_b + (h_b - l_b) * ((math.sin((2*3.1415/cycle_duration) * self.game_time))+1)/2
+
+        r = int(r)
+        g = int(g)
+        b = int(b)
+
+        darkness = pg.Surface(screen.get_size())
+        darkness.fill((r, g, b))
+        screen.blit(darkness, (0, 0), special_flags=pg.BLEND_MULT)
 
     @override
     def draw(self, screen: pg.Surface):
@@ -286,7 +311,7 @@ class GameScene(Scene):
             # print(self.online_player_pre_position)
 
 
-
+        self.draw_day_night_cycle(screen)  
         self.setting_button.draw(screen)
         if self.game_manager.current_map.path_name == "map.tmx":
             self.navigation_button.draw(screen)
@@ -306,12 +331,19 @@ class GameScene(Scene):
             self.navigation_surface.draw(screen)
         self.backpack_button.draw(screen)
 
-
+        # status bar
+        pg.draw.rect(screen, "black", (0, GameSettings.SCREEN_HEIGHT - 25, GameSettings.SCREEN_WIDTH, GameSettings.SCREEN_HEIGHT+5))
         self.text_drawer.draw(screen,
         f"Tile Pos: ({int(self.game_manager.player.position.x//GameSettings.TILE_SIZE)},{int(self.game_manager.player.position.y//GameSettings.TILE_SIZE)})",
         20, (0, GameSettings.SCREEN_HEIGHT - 20), color=(255, 255, 255))
 
-
+        time_str = None
+        if self.game_time <= 60:
+            time_str = "Time Played: %.1f seconds" % self.game_time
+        else:
+            time_str = "Time Played: %d minutes" % int(self.game_time/60)
+        self.text_drawer.draw(screen,time_str,20,
+            (GameSettings.SCREEN_WIDTH-5, GameSettings.SCREEN_HEIGHT - 20), color=(255, 255, 255), align="right")
 
         if self.minimap and self.game_manager.player:
             self.minimap.draw(
@@ -319,3 +351,4 @@ class GameScene(Scene):
                 self.game_manager.player.position.x,
                 self.game_manager.player.position.y
             )
+

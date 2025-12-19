@@ -51,6 +51,11 @@ class GameSettingSurface:
             lambda: self.mute(), self.surface_x, self.surface_y
         )
 
+        self.allow_day_night_cycle_checkbox = Checkbox(
+            410, 70 - 5, 35, 25, 1,
+            lambda: print("change cycle allow"), self.surface_x, self.surface_y
+        )
+
         self.save_settings = False
         self.load_settings = False
 
@@ -77,6 +82,7 @@ class GameSettingSurface:
             self.back_button.update(dt)
             self.volume_slider.update(dt)
             self.mute_checkbox.update(dt)
+            self.allow_day_night_cycle_checkbox.update(dt)
 
     def draw(self, screen: pg.Surface):
         if scene_manager.setting_opened:
@@ -87,13 +93,18 @@ class GameSettingSurface:
             self.close_button.draw(self.setting_surface)
             self.volume_slider.draw(self.setting_surface)
             self.mute_checkbox.draw(self.setting_surface)
-
+            self.allow_day_night_cycle_checkbox.draw(self.setting_surface)
             volume_text_surface = self.game_font.render(f"VOLUME: {self.volume_slider.get_value()}%", True, (255, 255, 255))
             self.setting_surface.blit(volume_text_surface, (20, self.surface_height//2 - 50))
 
             mute_text_surface = self.game_font.render("MUTE: " + ("ON" if self.mute_checkbox.get_value() else "OFF"), True,
                                                              (255, 255, 255))
             self.setting_surface.blit(mute_text_surface, (20, self.surface_height//2 + 20 + 30))
+
+            cycle_text_surface = self.game_font.render("ALLOW DAY-NIGHT CYCLE: " + ("ON" if self.allow_day_night_cycle_checkbox.get_value() else "OFF"),
+                                                      True,
+                                                      (255, 255, 255))
+            self.setting_surface.blit(cycle_text_surface, (20, 70))
 
             screen.blit(self.setting_surface, (self.surface_x, self.surface_y))
 

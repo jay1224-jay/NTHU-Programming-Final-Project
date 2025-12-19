@@ -156,8 +156,8 @@
       ],
       "merchants": [
         {
-          "x": 3.0,
-          "y": 3.0,
+          "x": 2.0,
+          "y": 2.0,
           "classification": "stationary",
           "facing": "DOWN",
           "max_tiles": 2

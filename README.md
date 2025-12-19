@@ -10,7 +10,25 @@ Author: Jay Wang (王宥傑)
 
 1. Day-Night Cycle and lamps (above ```night_overlay```), similar to Minecraft
 
-2. Teleportation Between Players
+    Use ```special_flags=pg.BLEND_MULT``` to draw darkness overlay
+
+```python
+l_r, l_g, l_b = 40, 40, 150
+h_r, h_g, h_b = 255, 255, 255
+cycle_duration = 60 # seconds
+
+r = l_r + (h_r - l_r) * ((math.sin((2*3.1415/cycle_duration)*self.game_time))+1)/2
+g = l_g + (h_g - l_g) * ((math.sin((2*3.1415/cycle_duration) * self.game_time))+1)/2
+b = l_b + (h_b - l_b) * ((math.sin((2*3.1415/cycle_duration) * self.game_time))+1)/2
+
+r = int(r)
+g = int(g)
+b = int(b)
+
+darkness = pg.Surface(screen.get_size())
+darkness.fill((r, g, b))
+screen.blit(darkness, (0, 0), special_flags=pg.BLEND_MULT)
+```
 
 ## About Checkpoint 3
 

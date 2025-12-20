@@ -202,21 +202,21 @@
       },
       {
         "name": "Venusaur",
-        "hp": 181,
-        "max_hp": 181,
-        "level": 1,
+        "hp": 193,
+        "max_hp": 193,
+        "level": 18,
         "sprite_path": "menu_sprites/menusprite4.png"
       }
     ],
     "items": [
       {
         "name": "Coins",
-        "count": 1354,
+        "count": 2154,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
         "name": "Pokeball",
-        "count": 80,
+        "count": 74,
         "sprite_path": "ingame_ui/ball.png"
       },
       {

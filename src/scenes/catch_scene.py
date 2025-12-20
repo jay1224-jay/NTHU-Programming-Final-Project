@@ -208,4 +208,7 @@ class CatchScene(Scene):
 
         self.text_drawer.draw(self.option_surface, self.msg, 20, (10, 10), color="white", align="left")
         screen.blit(self.option_surface, (self.option_surface_x, self.option_surface_y))
-        screen.blit(opponent_monster_sprite.image, (800, 200))
+        if self.catch_status == "catch":
+            screen.blit(item_sprite.image, (800, 200))
+        else:
+            screen.blit(opponent_monster_sprite.image, (800, 200))

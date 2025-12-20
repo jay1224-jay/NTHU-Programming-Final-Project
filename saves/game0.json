@@ -211,7 +211,7 @@
     "items": [
       {
         "name": "Coins",
-        "count": 2309,
+        "count": 100,
         "sprite_path": "ingame_ui/coin.png"
       },
       {
@@ -222,7 +222,7 @@
       {
         "name": "Defense Potion",
         "sprite_path": "ingame_ui/defense_potion.png",
-        "count": 3
+        "count": 5
       },
       {
         "name": "Strength Potion",

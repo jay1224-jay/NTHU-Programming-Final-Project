@@ -14,7 +14,7 @@ class Settings:
     MAX_CHANNELS: int = 16
     AUDIO_VOLUME: float =  0.5   # Volume of audio
     # Online
-    IS_ONLINE: bool = False
+    IS_ONLINE: bool = True
     ONLINE_SERVER_URL: str = "http://127.0.0.1:8989"
     GAME_FONT = "assets/fonts/Minecraft.ttf"
     

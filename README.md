@@ -6,6 +6,24 @@
 
 Author: Jay Wang (王宥傑)
 
+## Score
+
+| Checkpoint   | Score Got | Score | Percentage |
+|--------------|-----------|-------|------------|
+| Checkpoint 1 |     10    |   10  |    100%    |
+| Checkpoint 2 |     10    |   10  |    100%    |
+| Checkpoint 3 |     15    |   15  |    100%    |
+|      Sum     |     35    |   35  |    100%    |
+
+### Grade
+| Item    | Score | Weight |
+|---------|-------|--------|
+| Labs    | 100   | 40%    |
+| Midterm | 100   | 10%    |
+| Quizzes | 90    | 15%    |
+| Project | 100   | 35%    |
+| Sum     | **98.5(A+)**  | 100%   |
+
 ## About Creativity
 
 1. Day-Night Cycle and lamps (above ```night_overlay```), similar to Minecraft
